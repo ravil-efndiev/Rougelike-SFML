@@ -1,5 +1,5 @@
 #pragma once
-#include "include.hpp"
+#include "ECS/Scene.hpp"
 
 class Game {
 public:
@@ -10,4 +10,5 @@ public:
 
 private:
     Ptr<sf::RenderWindow> mWindow;
+    Scene mScene;
 };
