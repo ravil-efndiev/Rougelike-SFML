@@ -1,12 +1,13 @@
 #pragma once
 #include "System.hpp"
-#include "ComponentStorage.hpp"
+#include "ComponentRegistry.hpp"
 
+class Entity;
 class Scene {
 public:
     friend class Entity;
 
-    Scene();
+    Scene() = default;
     ~Scene() = default;
 
     Entity newEntity();
@@ -17,6 +18,6 @@ public:
 private:
     std::vector<Entity> mEntities;
     std::vector<System> mSystems;
-    ComponentStorage mStorage;
+    ComponentRegistry mRegistry;
     static i32 sEntityCounter;
 };

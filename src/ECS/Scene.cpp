@@ -1,14 +1,23 @@
 #include "Scene.hpp"
-#include "ComponentStorage.hpp"
+#include "Entity.hpp"
+
+template <class ...ComponentTypes>
+std::vector<Entity> getMatchingEntities(const std::vector<Entity>& entities) {
+    std::vector<Entity> matching;
+
+    for (auto entity : entities) {
+        if ((entity.has<ComponentTypes>() && ...)) {
+            matching.push_back(entity);
+        }
+    }
+
+    return matching;
+}
 
 i32 Scene::sEntityCounter = 0;
 
-Scene::Scene() {
-
-}
-
 Entity Scene::newEntity() {
-    Entity newEntity (sEntityCounter++, this);
+    Entity newEntity (sEntityCounter++, *this);
     mEntities.push_back(newEntity);
     return newEntity;
 }

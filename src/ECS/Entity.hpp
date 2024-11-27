@@ -1,33 +1,36 @@
 #pragma once
-#include "include.hpp"
+#include "Scene.hpp"
 
-class Scene;
 class Entity {
 public:
-    explicit Entity(i32 id, Scene* scene) : mId(id), mScene(scene) {}
+    explicit Entity(EntityId id, Scene& scene) : mId(id), mScene(scene) {}
 
-    i32 getId() const { return mId; }
+    EntityId getId() const { return mId; }
 
     bool operator==(const Entity& other) const { return mId == other.mId; }
     bool operator!=(const Entity& other) const { return mId != other.mId; }
 
-    template <class ComponentT, class ...Args>
-    ComponentT* add(Args&&... args) {
-        return mScene->mStorage.add<ComponentT>(*this, std::forward<Args>(args)...);
+    template <class ComponentT>
+    ComponentT* add(const ComponentT& component) {
+        return mScene.mRegistry.add<ComponentT>(mId, component);
     }
 
     template <class ComponentT>
     ComponentT* get() {
-        return mScene->mStorage.get<ComponentT>(*this);
+        return mScene.mRegistry.get<ComponentT>(mId);
+    }
+
+    template <class ComponentT>
+    bool has() {
+        return mScene.mRegistry.has<ComponentT>(mId);
+    }
+
+    template <class ComponentT>
+    void remove() {
+        mScene.mRegistry.remove<ComponentT>(mId);
     }
 
 private:
-    i32 mId;
-    Scene* mScene;
-};
-
-struct EntityHasher {
-    std::size_t operator()(const Entity& entity) {
-        return std::hash<i32>()(entity.getId());
-    }
+    EntityId mId;
+    Scene& mScene;
 };

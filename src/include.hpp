@@ -8,6 +8,7 @@
 #include <memory>
 #include <any>
 #include <functional>
+#include <typeindex>
 
 #include <SFML/Graphics.hpp>
 
@@ -19,6 +20,8 @@ typedef unsigned int   u32;
 typedef unsigned long  u64;
 typedef float  f32;
 typedef double f64;
+
+typedef u32 EntityId;
 
 template <class T>
 using Ptr = std::unique_ptr<T>;

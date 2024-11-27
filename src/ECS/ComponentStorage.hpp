@@ -1,56 +1,60 @@
 #pragma once
-#include "Entity.hpp"
+#include <include.hpp>
 
-class ComponentStorage
+class IComponentStorage {
+public:
+    virtual ~IComponentStorage() = default;
+};
+
+template <class ComponentT>
+class ComponentStorage : public IComponentStorage
 {
 public:
     ComponentStorage() = default;
     ~ComponentStorage() = default;
 
-    template <class ComponentT, class ...Args>
-    ComponentT* add(Entity entity, Args&&... args) {
-        std::vector<std::any> components = mRegistry[entity];
-
-        if (has<ComponentT&>(entity)) {
+    ComponentT* add(EntityId entityId, const ComponentT& component) {
+        if (has(entityId)) 
             return nullptr;
-        }
 
-        return &components.push_back(
-            std::any_cast<ComponentT&>(
-                ComponentT(std::forward<Args>(args)...)
-            )
-        );
-
+        mComponents.push_back(component);
+        mEntities.push_back(entityId);
+        size_t index = mComponents.size() - 1;
+        mEntityIdToIndex[entityId] = index;
+        return &mComponents[index];
     }
 
-    template <class ComponentT>
-    ComponentT* get(Entity entity) {
-        std::vector<std::any> components = mRegistry.at(entity);
-        for (const auto& component : components) {
-            
-        }
+    ComponentT* get(EntityId entityId) {
+        if (!has(entityId)) 
+            return nullptr;
+
+        return &mComponents[mEntityIdToIndex.at(entityId)];
     }
 
-    template <class ComponentT>
-    bool has(Entity entity) {
-        std::vector<std::any> components = mRegistry.at(entity);
-        for (const auto& component : components) {
-            try {
-                std::any_cast<ComponentT&>(component);
-                return true;
-            }
-            catch (const std::bad_any_cast&) {
-                continue;
-            }
-            catch (const std::out_of_range&) {
-                return false;
-                // TODO: throw an error
-            }
+    bool has(EntityId entityId) const {
+        return mEntityIdToIndex.find(entityId) != mEntityIdToIndex.end();
+    }
+
+    void remove(EntityId entityId) {
+        if (!has(entityId)) return;
+
+        size_t currentIndex = mEntityIdToIndex[entityId];
+        size_t lastIndex = mComponents.size() - 1;
+
+        if (currentIndex != lastIndex) {
+            std::swap(mComponents[currentIndex], mComponents[lastIndex]);
+            std::swap(mEntities[currentIndex], mEntities[lastIndex]);
+
+            mEntityIdToIndex[mEntities[currentIndex]] = currentIndex;
         }
-        return false;
+
+        mEntityIdToIndex.erase(entityId);
+        mComponents.pop_back();
+        mEntities.pop_back();
     }
 
 private:
-    std::unordered_map<Entity, std::vector<std::any>, EntityHasher> mRegistry;
-
+    std::vector<ComponentT> mComponents;
+    std::vector<EntityId> mEntities;
+    std::unordered_map<EntityId, size_t> mEntityIdToIndex;
 };

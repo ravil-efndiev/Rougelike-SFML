@@ -1,7 +1,9 @@
 #include "Game.hpp"
+#include "Entity.hpp"
 
 struct CMP1 {
     int a;
+    CMP1(int a): a(a) {}
 };
 
 struct CMP2 {
@@ -11,15 +13,18 @@ struct CMP2 {
 Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
     mWindow = newPtr<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), winTitle);
     auto test = mScene.newEntity();
-    test.add<CMP1>(10);
-    test.add<CMP2>(20);
+    test.add<CMP1>({10});
+    test.add<CMP2>({20});
 
     std::cout << test.get<CMP1>()->a << "\n";
+    std::cout << test.get<CMP2>()->b << "\n";
+    test.get<CMP2>()->b = 25;
+    std::cout << test.get<CMP2>()->b << "\n";
 }
 
 void Game::run() {
     sf::Texture tex;
-    tex.loadFromFile("assets/img.png");
+    tex.loadFromFile("../assets/img.png");
     sf::Sprite sprite (tex);
     sprite.setScale(0.5, 0.5);
     sprite.setColor(sf::Color::Red);
