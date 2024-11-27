@@ -7,13 +7,15 @@ class Scene {
 public:
     friend class Entity;
 
-    Scene() = default;
-    ~Scene() = default;
+    Scene();
+    ~Scene();
 
     Entity newEntity();
     Scene& addSystem(const System& system);
 
     void update();
+
+    std::vector<Entity> getEntities() const;
 
 private:
     std::vector<Entity> mEntities;

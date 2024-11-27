@@ -1,20 +1,14 @@
 #include "Scene.hpp"
 #include "Entity.hpp"
-
-template <class ...ComponentTypes>
-std::vector<Entity> getMatchingEntities(const std::vector<Entity>& entities) {
-    std::vector<Entity> matching;
-
-    for (auto entity : entities) {
-        if ((entity.has<ComponentTypes>() && ...)) {
-            matching.push_back(entity);
-        }
-    }
-
-    return matching;
-}
+#include <Components/SpriteSystems.hpp>
 
 i32 Scene::sEntityCounter = 0;
+
+Scene::Scene() {
+    addSystem(spriteTransformSystem);
+}
+
+Scene::~Scene() = default;
 
 Entity Scene::newEntity() {
     Entity newEntity (sEntityCounter++, *this);
@@ -31,4 +25,8 @@ void Scene::update() {
     for (const auto& system : mSystems) {
         system(mEntities);
     }
+}
+
+std::vector<Entity> Scene::getEntities() const {
+    return mEntities;
 }

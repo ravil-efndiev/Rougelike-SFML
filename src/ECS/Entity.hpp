@@ -11,22 +11,22 @@ public:
     bool operator!=(const Entity& other) const { return mId != other.mId; }
 
     template <class ComponentT>
-    ComponentT* add(const ComponentT& component) {
+    ComponentT* add(const ComponentT& component) const {
         return mScene.mRegistry.add<ComponentT>(mId, component);
     }
 
     template <class ComponentT>
-    ComponentT* get() {
+    ComponentT* get() const {
         return mScene.mRegistry.get<ComponentT>(mId);
     }
 
     template <class ComponentT>
-    bool has() {
+    bool has() const {
         return mScene.mRegistry.has<ComponentT>(mId);
     }
 
     template <class ComponentT>
-    void remove() {
+    void remove() const {
         mScene.mRegistry.remove<ComponentT>(mId);
     }
 
