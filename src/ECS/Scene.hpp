@@ -10,7 +10,7 @@ public:
     Scene();
     ~Scene();
 
-    Entity newEntity();
+    Entity newEntity(const sf::Vector2f& initialPosition = { 0.f, 0.f });
     Scene& addSystem(const System& system);
 
     void update();

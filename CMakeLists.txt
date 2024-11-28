@@ -14,9 +14,11 @@ endif()
 add_executable(game 
     src/main.cpp
     src/Game.cpp
+    src/Time.cpp
     src/ECS/Scene.cpp
     src/ECS/SceneRenderer.cpp
     src/Components/SpriteSystems.cpp
+    src/Components/Animator.cpp
 )
 
 target_include_directories(game PUBLIC

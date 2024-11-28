@@ -1,6 +1,8 @@
 #pragma once
 #include <include.hpp>
 
+// for storing storages in a map instead of Ptr<void>
+// looks fucking stupid though
 class IComponentStorage {
 public:
     virtual ~IComponentStorage() = default;

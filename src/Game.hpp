@@ -1,6 +1,7 @@
 #pragma once
 #include "ECS/Scene.hpp"
 #include "ECS/SceneRenderer.hpp"
+#include "Components/Animator.hpp"
 
 class Game {
 public:
@@ -13,4 +14,6 @@ private:
     Ptr<sf::RenderWindow> mWindow;
     Scene mScene;
     Ptr<SceneRenderer> mRenderer;
+    Ptr<sf::View> mView;
+    Animator* animator;
 };

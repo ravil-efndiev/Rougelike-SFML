@@ -10,9 +10,9 @@ public:
     bool operator==(const Entity& other) const { return mId == other.mId; }
     bool operator!=(const Entity& other) const { return mId != other.mId; }
 
-    template <class ComponentT>
-    ComponentT* add(const ComponentT& component) const {
-        return mScene.mRegistry.add<ComponentT>(mId, component);
+    template <class ComponentT, class ...Args>
+    ComponentT* add(Args&&... args) const {
+        return mScene.mRegistry.add<ComponentT>(mId, ComponentT(std::forward<Args>(args)...));
     }
 
     template <class ComponentT>
