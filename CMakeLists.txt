@@ -19,6 +19,7 @@ add_executable(game
     src/ECS/SceneRenderer.cpp
     src/Components/SpriteSystems.cpp
     src/Components/Animator.cpp
+    src/Gameplay/Player.cpp
 )
 
 target_include_directories(game PUBLIC

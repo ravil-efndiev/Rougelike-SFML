@@ -2,11 +2,11 @@
 #include <Time.hpp>
 
 void Animator::play(const std::string& animName) {
-    if (animations.find(animName) != animations.end()) {
-        auto* anim = animations.at(animName).get();
+    auto anim = animations.at(animName);
+    if (currentAnimation != anim) {
         currentAnimation = anim;
-        anim->play();
     }
+    currentAnimation->play();
 }
 
 void Animator::addAnimation(const std::string& animName, const AnimationProps& props) {

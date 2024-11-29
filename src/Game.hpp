@@ -15,5 +15,4 @@ private:
     Scene mScene;
     Ptr<SceneRenderer> mRenderer;
     Ptr<sf::View> mView;
-    Animator* animator;
 };

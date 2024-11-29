@@ -3,6 +3,8 @@
 #include "Time.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
+#include "Components/SpriteSystems.hpp"
+#include "Gameplay/Player.hpp"
 #include <SFML/Graphics.hpp>
 
 Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
@@ -10,22 +12,15 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
     mView = newPtr<sf::View>(sf::FloatRect(0.f, 0.f, (f32)winWidth, (f32)winHeight));
     mRenderer = newPtr<SceneRenderer>(mScene, *mWindow);
     mWindow->setView(*mView);
+    mWindow->setFramerateLimit(60);
+
+    mScene
+        .addSystem(spriteTransformSystem)
+        .addSystem(spriteAnimationSystem)
+        .addSystem(playerSystem);
 
     Entity player = mScene.newEntity();
-    Ref<sf::Texture> tex = newRef<sf::Texture>();
-    tex->loadFromFile("../assets/textures/player_sheet.png");
-    player.add<Sprite>(tex);
-    animator = player.add<Animator>();
-
-    animator->addAnimation("idle_down", (AnimationProps) {
-        .frameDuration = 40,
-        .startX = 0,
-        .startY = 0,
-        .endX = 3,
-        .subTextureSize = 48,
-    });
-
-    player.get<Transform>()->scale = {3.f, 3.f};
+    initPlayer(player);
 }
 
 void Game::run() {
@@ -42,9 +37,10 @@ void Game::run() {
                 mView->reset(sf::FloatRect(0.f, 0.f, event.size.width, event.size.height));
                 mWindow->setView(*mView);
             }
+
+            mScene.onEvent(event);
         }
 
-        animator->play("idle_down");
         mScene.update();
         
         mWindow->clear(sf::Color::Black);

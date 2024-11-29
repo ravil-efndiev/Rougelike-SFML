@@ -27,7 +27,7 @@ private:
 struct Animator {
     Animator() = default;
 
-    Animation* currentAnimation;
+    Ref<Animation> currentAnimation;
     std::unordered_map<std::string, Ref<Animation>> animations;
 
     void play(const std::string& animName);

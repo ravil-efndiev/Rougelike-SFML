@@ -5,11 +5,7 @@
 
 i32 Scene::sEntityCounter = 0;
 
-Scene::Scene() {
-    addSystem(spriteTransformSystem);
-    addSystem(spriteAnimationSystem);
-}
-
+Scene::Scene() {}
 Scene::~Scene() = default;
 
 Entity Scene::newEntity(const sf::Vector2f& initialPosition) {
@@ -24,11 +20,23 @@ Scene& Scene::addSystem(const System& system) {
     return *this;
 }
 
+Scene& Scene::addEventSystem(const EventSystem& system) {
+    mEvtSystems.push_back(system);
+    return *this;
+}
+
 void Scene::update() {
     for (const auto& system : mSystems) {
         system(mEntities);
     }
 }
+
+void Scene::onEvent(const sf::Event& event) {
+    for (const auto& system : mEvtSystems) {
+        system(event, mEntities);
+    }
+}
+
 
 std::vector<Entity> Scene::getEntities() const {
     return mEntities;
