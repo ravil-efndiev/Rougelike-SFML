@@ -8,6 +8,7 @@ enum class MoveDirection {
 struct Player {
     const float moveSpeed = 200.f;
     MoveDirection direction = MoveDirection::down;
+    MoveDirection bufferedDirection = MoveDirection::down;
 
     bool attack = false;
     bool bufferedAttack = false;

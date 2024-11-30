@@ -7,6 +7,17 @@
 #include "Gameplay/Player.hpp"
 #include <SFML/Graphics.hpp>
 
+Game* Game::sInstance {};
+
+Game* Game::create(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
+    sInstance = new Game(winWidth, winHeight, winTitle);
+    return sInstance;
+}
+
+Game* Game::getInstance() {
+    return sInstance;
+}
+
 Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
     mWindow = newPtr<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), winTitle);
     mView = newPtr<sf::View>(sf::FloatRect(0.f, 0.f, (f32)winWidth, (f32)winHeight));
@@ -32,7 +43,9 @@ void Game::run() {
 
         while (mWindow->pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
+                std::cout << "closestart\n";
                 mWindow->close();
+                std::cout << "closeend\n";
             }
 
             if (event.type == sf::Event::Resized) {
@@ -49,4 +62,12 @@ void Game::run() {
         mRenderer->render();
         mWindow->display();
     }
+}
+
+sf::RenderWindow& Game::window() {
+    return *mWindow;
+}
+
+sf::View& Game::camera() {
+    return *mView;
 }

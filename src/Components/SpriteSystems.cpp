@@ -20,7 +20,7 @@ void spriteAnimationSystem(const std::vector<Entity>& entities) {
         auto* animator = entity.get<Animator>();
         auto* sprite = entity.get<Sprite>();
 
-        if (animator->currentAnimation) {
+        if (animator->currentAnimation && !animator->currentAnimation->isFinished()) {
             sprite->sprite.setTextureRect(animator->currentAnimation->getSubTexture());
         }
     }
