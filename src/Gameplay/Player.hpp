@@ -7,10 +7,18 @@ enum class MoveDirection {
 
 struct Player {
     const float moveSpeed = 200.f;
-
     MoveDirection direction = MoveDirection::down;
+
+    bool attack = false;
+    bool bufferedAttack = false;
+    bool combo = false;
+    f32 comboTimer = 0;
+
+    void resetAttack();
 };
 
 void initPlayer(Entity player);
 
-void playerSystem(const std::vector<Entity>& entities);
+void playerMovementSystem(const std::vector<Entity>& entities);
+void playerCombatSystem(const std::vector<Entity>& entities);
+void playerEventSystem(const sf::Event& event, const std::vector<Entity>& entities);

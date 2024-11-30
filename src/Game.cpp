@@ -17,7 +17,9 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
     mScene
         .addSystem(spriteTransformSystem)
         .addSystem(spriteAnimationSystem)
-        .addSystem(playerSystem);
+        .addSystem(playerMovementSystem)
+        .addSystem(playerCombatSystem)
+        .addEventSystem(playerEventSystem);
 
     Entity player = mScene.newEntity();
     initPlayer(player);
