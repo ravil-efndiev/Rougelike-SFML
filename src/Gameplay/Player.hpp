@@ -1,5 +1,6 @@
 #pragma once
 #include <Entity.hpp>
+#include <Scene.hpp>
 
 enum class MoveDirection {
     up, down, left, right
@@ -18,8 +19,12 @@ struct Player {
     void resetAttack();
 };
 
-void initPlayer(Entity player);
+struct PlayerAttackHitbox {};
+
+void initPlayer(Scene& scene);
 
 void playerMovementSystem(const std::vector<Entity>& entities);
 void playerCombatSystem(const std::vector<Entity>& entities);
 void playerEventSystem(const sf::Event& event, const std::vector<Entity>& entities);
+
+void playerAttackHiboxSystem(const std::vector<Entity>& entities);

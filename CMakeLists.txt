@@ -18,6 +18,7 @@ add_executable(game
     src/ECS/Scene.cpp
     src/ECS/SceneRenderer.cpp
     src/Components/SpriteSystems.cpp
+    src/Components/CollisionSystems.cpp
     src/Components/Animator.cpp
     src/Gameplay/Player.cpp
 )

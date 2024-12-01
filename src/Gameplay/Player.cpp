@@ -1,6 +1,8 @@
 #include "Player.hpp"
 #include <Components/Transform.hpp>
 #include <Components/Sprite.hpp>
+#include <Components/Collider.hpp>
+#include <Components/Tag.hpp>
 #include <Components/Animator.hpp>
 #include <Time.hpp>
 #include <Game.hpp>
@@ -29,11 +31,22 @@ void normalize(sf::Vector2f& vec) {
     if (magnitude != 0) vec /= magnitude;
 }
 
-void initPlayer(Entity player) {
+void initPlayer(Scene& scene) {
+    Entity player = scene.newEntity("player");
+    Entity atkHitbox = scene.newEntity();
+
     player.add<Player>();
+    atkHitbox.add<PlayerAttackHitbox>();
+    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = true;
+
     Ref<sf::Texture> tex = newRef<sf::Texture>();
     tex->loadFromFile("../assets/textures/player_sheet.png");
     player.add<Sprite>(tex);
+
+    auto* tf = player.get<Transform>();
+    tf->scale = { 3.f, 3.f };
+
+    player.add<Collider>(sf::Vector2f(30, 60))->debugRender = true;
 
     auto* animator = player.add<Animator>();
     animator->addAnimation("idle_down",  { 30, 0, 0, 3, 48 });
@@ -46,19 +59,27 @@ void initPlayer(Entity player) {
     animator->addAnimation("move_up",    { 10, 0, 5, 5, 48 });
     animator->addAnimation("move_left",  { 10, 0, 7, 5, 48 });
 
-    animator->addAnimation("attack_right1", { 7, 0, 8, 5, 48 });
-    animator->addAnimation("attack_right2", { 7, 6, 8, 10, 48 });
-    animator->addAnimation("attack_left1", { 7, 0, 9, 5, 48 });
-    animator->addAnimation("attack_left2", { 7, 6, 9, 10, 48 });
+    animator->addAnimation("attack_right1", { 10, 0, 8, 3, 48 }, "attacks");
+    animator->addAnimation("attack_right2", { 10, 4, 8, 7, 48 }, "attacks");
+    animator->addAnimation("attack_left1",  { 10, 0, 9, 3, 48 }, "attacks");
+    animator->addAnimation("attack_left2",  { 10, 4, 9, 7, 48 }, "attacks");
 
-    animator->addAnimation("attack_down1", { 10, 0, 10, 3, 48 });
-    animator->addAnimation("attack_down2", { 10, 4, 10, 7, 48 });
+    animator->addAnimation("attack_down1", { 10, 0, 10, 3, 48 }, "attacks");
+    animator->addAnimation("attack_down2", { 10, 4, 10, 7, 48 }, "attacks");
+    animator->addAnimation("attack_up1",   { 10, 0, 11, 3, 48 }, "attacks");
+    animator->addAnimation("attack_up2",   { 10, 4, 11, 7, 48 }, "attacks");
 
-    // not done yet
-    animator->addAnimation("attack_up1", { 7, 0, 8, 5, 48 });
-    animator->addAnimation("attack_up2", { 7, 6, 8, 10, 48 });
+    animator->setAnimationsTrigger(animator->animCategories.at("attacks"), [player, atkHitbox](i32 frame) {
+        auto* playerCmp = player.get<Player>();
+        auto* atkHitboxCollider = atkHitbox.get<Collider>();
 
-    player.get<Transform>()->scale = { 3.f, 3.f };
+        if (frame == 1) {
+            // TODO: turn hitbox on and modify based on direction
+        }
+        else if (frame == 3) {
+            // TODO: turn hitbox off
+        }
+    });
 }
 
 void move(MoveDirection dir, Player* player, Animator* animator, sf::Vector2f& movement) {
@@ -169,29 +190,29 @@ MoveDirection playerMouseDir(const sf::Vector2f& playerPos, const sf::Vector2f& 
 }
 
 void playerEventSystem(const sf::Event& event, const std::vector<Entity>& entities) {
-    if (event.type == sf::Event::MouseButtonPressed) {
-        for (const auto& entity : entities) {
-            if (!entity.has<Player>() 
-                || !entity.has<Transform>() 
-                || !entity.has<Sprite>()) continue;
+    if (event.type != sf::Event::MouseButtonPressed) return;
 
-            auto* player = entity.get<Player>();
-            auto* tf = entity.get<Transform>();
-            auto* sprite = entity.get<Sprite>();
+    for (const auto& entity : entities) {
+        if (!entity.has<Player>() 
+            || !entity.has<Transform>() 
+            || !entity.has<Sprite>()) continue;
 
-            Game* game = Game::getInstance();
-            sf::Vector2i mousePixel = sf::Mouse::getPosition(game->window());
-            sf::Vector2f mousePos = game->window().mapPixelToCoords(mousePixel);
-            MoveDirection mouseDir = playerMouseDir(sprite->centerPosition(tf->position), mousePos);
+        auto* player = entity.get<Player>();
+        auto* tf = entity.get<Transform>();
+        auto* sprite = entity.get<Sprite>();
 
-            if (player->attack) {
-                player->bufferedAttack = true;
-                player->bufferedDirection = mouseDir;
-            }
-            else {
-                player->attack = true;
-                player->direction = mouseDir;
-            }
+        Game* game = Game::getInstance();
+        sf::Vector2i mousePixel = sf::Mouse::getPosition(game->window());
+        sf::Vector2f mousePos = game->window().mapPixelToCoords(mousePixel);
+        MoveDirection mouseDir = playerMouseDir(sprite->centerPosition(tf->position), mousePos);
+
+        if (player->attack) {
+            player->bufferedAttack = true;
+            player->bufferedDirection = mouseDir;
+        }
+        else {
+            player->attack = true;
+            player->direction = mouseDir;
         }
     }
 }
@@ -201,4 +222,18 @@ void Player::resetAttack() {
     bufferedAttack = false;
     combo = false;
     comboTimer = 0.f;
+}
+
+void playerAttackHiboxSystem(const std::vector<Entity>& entities) {
+    for (const auto& entity : entities) {
+        if (!entity.has<PlayerAttackHitbox>() || !entity.has<Transform>()) continue;
+
+        auto* tf = entity.get<Transform>();
+
+        Entity player = *std::find_if(entities.begin(), entities.end(), [](const Entity& entity) {
+            return entity.get<Tag>()->name == "player";
+        });
+
+        tf->position = player.get<Transform>()->position;
+    }
 }

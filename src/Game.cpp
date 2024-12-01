@@ -4,6 +4,7 @@
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
 #include "Components/SpriteSystems.hpp"
+#include "Components/CollisionSystems.hpp"
 #include "Gameplay/Player.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -26,14 +27,18 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
     mWindow->setFramerateLimit(60);
 
     mScene
+        // for basic components
         .addSystem(spriteTransformSystem)
         .addSystem(spriteAnimationSystem)
+        .addSystem(colliderPositionSystem)
+
+        // player
         .addSystem(playerMovementSystem)
         .addSystem(playerCombatSystem)
-        .addEventSystem(playerEventSystem);
+        .addEventSystem(playerEventSystem)
+        .addSystem(playerAttackHiboxSystem);
 
-    Entity player = mScene.newEntity();
-    initPlayer(player);
+    initPlayer(mScene);
 }
 
 void Game::run() {
@@ -43,9 +48,7 @@ void Game::run() {
 
         while (mWindow->pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                std::cout << "closestart\n";
                 mWindow->close();
-                std::cout << "closeend\n";
             }
 
             if (event.type == sf::Event::Resized) {

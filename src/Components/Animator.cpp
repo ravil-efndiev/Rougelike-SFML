@@ -9,8 +9,26 @@ void Animator::play(const std::string& animName) {
     currentAnimation->play();
 }
 
-void Animator::addAnimation(const std::string& animName, const AnimationProps& props) {
-    animations[animName] = newRef<Animation>(props);
+void Animator::addAnimation(
+    const std::string& animName, 
+    const AnimationProps& props,
+    const std::string& category
+) {
+    Ref<Animation> newAnim = newRef<Animation>(props);
+    animations[animName] = newAnim;
+    
+    if (!category.empty()) {
+        animCategories[category].push_back(newAnim);
+    }
+}
+
+void Animator::setAnimationsTrigger(
+    const std::vector<Ref<Animation>>& animations,
+    const std::function<void(i32)>& trigger
+) {
+    for (const auto& anim : animations) {
+        anim->setTrigger(trigger);
+    }
 }
 
 Animation::Animation(const AnimationProps& props) : Props(props) {
@@ -21,6 +39,10 @@ Animation::Animation(const AnimationProps& props) : Props(props) {
     mCurrentX = Props.startX * Props.subTextureSize;
 }
 
+void Animation::setTrigger(const std::function<void(i32)>& trigger) {
+    mTrigger = trigger;
+}
+
 void Animation::play() {
     mFinished = false;
     mTimer += 100.f * Time::dt();
@@ -28,12 +50,17 @@ void Animation::play() {
     if (mTimer >= Props.frameDuration) {
         mTimer = 0;
 
+        if (mTrigger)
+            mTrigger(mCurrentFrame);
+
         if (mCurrentX >= Props.endX * Props.subTextureSize) {
             mFinished = true;
             mCurrentX = Props.startX * Props.subTextureSize;
+            mCurrentFrame = 0;
         }
         else {
             mCurrentX += Props.subTextureSize;
+            mCurrentFrame++;
         }
 
         mCurrentSubTexture = sf::IntRect(

@@ -14,4 +14,5 @@ private:
 
 private:
     void renderSprites(const std::vector<Entity>& entities);
+    void renderDebug(const std::vector<Entity>& entities);
 };
