@@ -25,7 +25,7 @@ void SceneRenderer::renderDebug(const std::vector<Entity>& entities) {
         if (!entity.has<Collider>()) continue;
 
         auto* coll = entity.get<Collider>();
-        if (coll->debugRender) {
+        if (coll->debugRender && coll->active) {
             sf::RectangleShape rect ({coll->bounds.width, coll->bounds.height});
             rect.setPosition(coll->bounds.left, coll->bounds.top);
             rect.setFillColor({0, 0, 0, 0});

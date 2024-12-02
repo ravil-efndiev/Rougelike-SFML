@@ -5,6 +5,8 @@ void colliderPositionSystem(const std::vector<Entity>& entities) {
         if (!entity.has<Collider>() || !entity.has<Transform>()) continue;
 
         auto* coll = entity.get<Collider>();
+        if (!coll->active) continue;
+
         auto* tf = entity.get<Transform>();
 
         if (entity.has<Sprite>()) {

@@ -31,6 +31,13 @@ void normalize(sf::Vector2f& vec) {
     if (magnitude != 0) vec /= magnitude;
 }
 
+sf::Vector2f centerColliderToSprite(const Collider* coll, const Transform* spriteTf, const Sprite* sprite) {
+    return {
+        sprite->centerPosition(spriteTf->position).x - coll->bounds.width / 2.f,
+        sprite->centerPosition(spriteTf->position).y - coll->bounds.height / 2.f
+    };
+}
+
 void initPlayer(Scene& scene) {
     Entity player = scene.newEntity("player");
     Entity atkHitbox = scene.newEntity();
@@ -71,13 +78,49 @@ void initPlayer(Scene& scene) {
 
     animator->setAnimationsTrigger(animator->animCategories.at("attacks"), [player, atkHitbox](i32 frame) {
         auto* playerCmp = player.get<Player>();
+        auto* playerTf = player.get<Transform>();
+        auto* playerSprite = player.get<Sprite>();
         auto* atkHitboxCollider = atkHitbox.get<Collider>();
+        auto* atkHitboxTf = atkHitbox.get<Transform>();
 
         if (frame == 1) {
-            // TODO: turn hitbox on and modify based on direction
+            atkHitboxCollider->active = true;
+            
+            const f32 horizontalWidth = 50.f;
+            const f32 horizontalHeight = 70.f;
+
+            switch (playerCmp->direction) {
+            case MoveDirection::left:
+                atkHitboxCollider->bounds.width = horizontalWidth;
+                atkHitboxCollider->bounds.height = horizontalHeight;
+                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
+                atkHitboxTf->position.x -= horizontalWidth;
+                break;
+            case MoveDirection::right:
+                atkHitboxCollider->bounds.width = horizontalWidth;
+                atkHitboxCollider->bounds.height = horizontalHeight;
+                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
+                atkHitboxTf->position.x += horizontalWidth;
+                break;
+                
+            case MoveDirection::up:
+                atkHitboxCollider->bounds.width = horizontalHeight;
+                atkHitboxCollider->bounds.height = horizontalWidth;
+                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
+                atkHitboxTf->position.y -= horizontalHeight / 1.5f;
+                break;
+            case MoveDirection::down:
+                atkHitboxCollider->bounds.width = horizontalHeight;
+                atkHitboxCollider->bounds.height = horizontalWidth;
+                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
+                atkHitboxTf->position.y += horizontalHeight / 1.5f;
+                break;
+            }
         }
         else if (frame == 3) {
-            // TODO: turn hitbox off
+            atkHitboxCollider->bounds.width = 0.f;
+            atkHitboxCollider->bounds.height = 0.f;
+            atkHitboxCollider->active = false;
         }
     });
 }
@@ -222,18 +265,4 @@ void Player::resetAttack() {
     bufferedAttack = false;
     combo = false;
     comboTimer = 0.f;
-}
-
-void playerAttackHiboxSystem(const std::vector<Entity>& entities) {
-    for (const auto& entity : entities) {
-        if (!entity.has<PlayerAttackHitbox>() || !entity.has<Transform>()) continue;
-
-        auto* tf = entity.get<Transform>();
-
-        Entity player = *std::find_if(entities.begin(), entities.end(), [](const Entity& entity) {
-            return entity.get<Tag>()->name == "player";
-        });
-
-        tf->position = player.get<Transform>()->position;
-    }
 }

@@ -35,8 +35,7 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
         // player
         .addSystem(playerMovementSystem)
         .addSystem(playerCombatSystem)
-        .addEventSystem(playerEventSystem)
-        .addSystem(playerAttackHiboxSystem);
+        .addEventSystem(playerEventSystem);
 
     initPlayer(mScene);
 }

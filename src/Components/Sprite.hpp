@@ -11,7 +11,7 @@ struct Sprite {
     Ref<sf::Texture> texture;
     sf::Sprite sprite;
 
-    sf::Vector2f centerPosition(const sf::Vector2f& topleft) {
+    sf::Vector2f centerPosition(const sf::Vector2f& topleft) const {
         return {
             topleft.x + sprite.getGlobalBounds().width / 2.f,
             topleft.y + sprite.getGlobalBounds().height / 2.f
