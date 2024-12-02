@@ -6,6 +6,7 @@
 #include "Components/SpriteSystems.hpp"
 #include "Components/CollisionSystems.hpp"
 #include "Gameplay/Player.hpp"
+#include "Gameplay/Enemy.hpp"
 #include <SFML/Graphics.hpp>
 
 Game* Game::sInstance {};
@@ -35,9 +36,13 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
         // player
         .addSystem(playerMovementSystem)
         .addSystem(playerCombatSystem)
-        .addEventSystem(playerEventSystem);
+        .addEventSystem(playerEventSystem)
+
+        // enemy
+        .addSystem(enemyAISystem);
 
     initPlayer(mScene);
+    spawnEnemy(mScene, EnemyType::undeadMelee);
 }
 
 void Game::run() {

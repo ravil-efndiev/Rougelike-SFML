@@ -20,7 +20,10 @@ add_executable(game
     src/Components/SpriteSystems.cpp
     src/Components/CollisionSystems.cpp
     src/Components/Animator.cpp
+    src/Components/Collider.cpp
     src/Gameplay/Player.cpp
+    src/Gameplay/Enemy.cpp
+    src/Gameplay/AttackHitbox.cpp
 )
 
 target_include_directories(game PUBLIC

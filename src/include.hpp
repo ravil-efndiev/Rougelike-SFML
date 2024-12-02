@@ -12,12 +12,12 @@
 
 #include <SFML/Graphics.hpp>
 
-typedef signed short i16;
-typedef signed int   i32;
-typedef signed long  i64;
-typedef unsigned short u16;
-typedef unsigned int   u32;
-typedef unsigned long  u64;
+typedef int16_t i16;
+typedef int32_t i32;
+typedef int64_t i64;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
 typedef float  f32;
 typedef double f64;
 

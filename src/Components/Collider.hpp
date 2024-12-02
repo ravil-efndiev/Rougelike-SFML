@@ -1,5 +1,7 @@
 #pragma once
 #include <include.hpp>
+#include "Transform.hpp"
+#include "Sprite.hpp"
 
 struct Collider {
     Collider(const sf::Vector2f& size, bool solid = false) 
@@ -14,3 +16,5 @@ struct Collider {
         return bounds.intersects(other.bounds);
     }
 };
+
+sf::Vector2f centerColliderToSprite(const Collider* coll, const Transform* spriteTf, const Sprite* sprite);

@@ -19,8 +19,6 @@ struct Player {
     void resetAttack();
 };
 
-struct PlayerAttackHitbox {};
-
 void initPlayer(Scene& scene);
 
 void playerMovementSystem(const std::vector<Entity>& entities);

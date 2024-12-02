@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "AttackHitbox.hpp"
 #include <Components/Transform.hpp>
 #include <Components/Sprite.hpp>
 #include <Components/Collider.hpp>
@@ -31,20 +32,13 @@ void normalize(sf::Vector2f& vec) {
     if (magnitude != 0) vec /= magnitude;
 }
 
-sf::Vector2f centerColliderToSprite(const Collider* coll, const Transform* spriteTf, const Sprite* sprite) {
-    return {
-        sprite->centerPosition(spriteTf->position).x - coll->bounds.width / 2.f,
-        sprite->centerPosition(spriteTf->position).y - coll->bounds.height / 2.f
-    };
-}
-
 void initPlayer(Scene& scene) {
     Entity player = scene.newEntity("player");
     Entity atkHitbox = scene.newEntity();
 
     player.add<Player>();
-    atkHitbox.add<PlayerAttackHitbox>();
-    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = true;
+    atkHitbox.add<AttackHitbox>();
+    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
 
     Ref<sf::Texture> tex = newRef<sf::Texture>();
     tex->loadFromFile("../assets/textures/player_sheet.png");
@@ -53,7 +47,7 @@ void initPlayer(Scene& scene) {
     auto* tf = player.get<Transform>();
     tf->scale = { 3.f, 3.f };
 
-    player.add<Collider>(sf::Vector2f(30, 60))->debugRender = true;
+    player.add<Collider>(sf::Vector2f(30, 60))->debugRender = false;
 
     auto* animator = player.add<Animator>();
     animator->addAnimation("idle_down",  { 30, 0, 0, 3, 48 });
@@ -107,13 +101,13 @@ void initPlayer(Scene& scene) {
                 atkHitboxCollider->bounds.width = horizontalHeight;
                 atkHitboxCollider->bounds.height = horizontalWidth;
                 atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
-                atkHitboxTf->position.y -= horizontalHeight / 1.5f;
+                atkHitboxTf->position.y -= horizontalWidth;
                 break;
             case MoveDirection::down:
                 atkHitboxCollider->bounds.width = horizontalHeight;
                 atkHitboxCollider->bounds.height = horizontalWidth;
                 atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
-                atkHitboxTf->position.y += horizontalHeight / 1.5f;
+                atkHitboxTf->position.y += horizontalWidth;
                 break;
             }
         }
