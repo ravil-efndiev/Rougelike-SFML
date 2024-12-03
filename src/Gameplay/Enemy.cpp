@@ -22,7 +22,7 @@ void spawnEnemy(Scene& scene, EnemyType type) {
     auto* animator = newEnemy.add<Animator>();
 
     Entity atkHitbox = scene.newEntity();
-    atkHitbox.add<AttackHitbox>()->targets = AttackHitbox::player;
+    atkHitbox.add<AttackHitbox>(30.f, 60.f)->targets = AttackHitbox::player;
     atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = true;
 
     animator->addAnimation("idle_right",   { 50, 0, 0, 1, 48 });
@@ -37,6 +37,7 @@ void spawnEnemy(Scene& scene, EnemyType type) {
         auto* enemy = newEnemy.get<Enemy>();
         auto* enemyTf = newEnemy.get<Transform>();
         auto* enemySprite = newEnemy.get<Sprite>();
+        auto* hitbox = atkHitbox.get<AttackHitbox>();
         auto* atkHitboxCollider = atkHitbox.get<Collider>();
         auto* atkHitboxTf = atkHitbox.get<Transform>();
         
@@ -44,23 +45,9 @@ void spawnEnemy(Scene& scene, EnemyType type) {
         const f32 horizontalHeight = 60.f;
 
         if (frame == 2) {
-            atkHitboxCollider->active = true;
-            switch (enemy->direction) {
-            case MoveDirection::left:
-                atkHitboxCollider->bounds.width = horizontalWidth;
-                atkHitboxCollider->bounds.height = horizontalHeight;
-                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, enemyTf, enemySprite);
-                atkHitboxTf->position.x -= horizontalWidth;
-                break;
-            case MoveDirection::right:
-                atkHitboxCollider->bounds.width = horizontalWidth;
-                atkHitboxCollider->bounds.height = horizontalHeight;
-                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, enemyTf, enemySprite);
-                atkHitboxTf->position.x += horizontalWidth;
-                break;
-            default:
-                break;
-            }
+            spawnAttackHitbox(
+                enemy->direction, hitbox, atkHitboxCollider, atkHitboxTf, enemyTf, enemySprite
+            );
         }
         else if (frame == 4) {
             atkHitboxCollider->active = false;

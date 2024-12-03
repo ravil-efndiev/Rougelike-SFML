@@ -37,8 +37,8 @@ void initPlayer(Scene& scene) {
     Entity atkHitbox = scene.newEntity();
 
     player.add<Player>();
-    atkHitbox.add<AttackHitbox>();
-    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
+    atkHitbox.add<AttackHitbox>(40.f, 70.f);
+    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = true;
 
     Ref<sf::Texture> tex = newRef<sf::Texture>();
     tex->loadFromFile("../assets/textures/player_sheet.png");
@@ -74,42 +74,14 @@ void initPlayer(Scene& scene) {
         auto* playerCmp = player.get<Player>();
         auto* playerTf = player.get<Transform>();
         auto* playerSprite = player.get<Sprite>();
+        auto* hitbox = atkHitbox.get<AttackHitbox>();
         auto* atkHitboxCollider = atkHitbox.get<Collider>();
         auto* atkHitboxTf = atkHitbox.get<Transform>();
 
         if (frame == 1) {
-            atkHitboxCollider->active = true;
-            
-            const f32 horizontalWidth = 50.f;
-            const f32 horizontalHeight = 70.f;
-
-            switch (playerCmp->direction) {
-            case MoveDirection::left:
-                atkHitboxCollider->bounds.width = horizontalWidth;
-                atkHitboxCollider->bounds.height = horizontalHeight;
-                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
-                atkHitboxTf->position.x -= horizontalWidth;
-                break;
-            case MoveDirection::right:
-                atkHitboxCollider->bounds.width = horizontalWidth;
-                atkHitboxCollider->bounds.height = horizontalHeight;
-                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
-                atkHitboxTf->position.x += horizontalWidth;
-                break;
-                
-            case MoveDirection::up:
-                atkHitboxCollider->bounds.width = horizontalHeight;
-                atkHitboxCollider->bounds.height = horizontalWidth;
-                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
-                atkHitboxTf->position.y -= horizontalWidth;
-                break;
-            case MoveDirection::down:
-                atkHitboxCollider->bounds.width = horizontalHeight;
-                atkHitboxCollider->bounds.height = horizontalWidth;
-                atkHitboxTf->position = centerColliderToSprite(atkHitboxCollider, playerTf, playerSprite);
-                atkHitboxTf->position.y += horizontalWidth;
-                break;
-            }
+            spawnAttackHitbox(
+                playerCmp->direction, hitbox, atkHitboxCollider, atkHitboxTf, playerTf, playerSprite
+            );
         }
         else if (frame == 3) {
             atkHitboxCollider->bounds.width = 0.f;
