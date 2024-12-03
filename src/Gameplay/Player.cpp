@@ -20,20 +20,13 @@ static const std::unordered_map<std::string, DirectionData> directions = {
     {"up",    {MoveDirection::up,    { 0.f, -1.f }}},
 };
 
-static const std::unordered_map<MoveDirection, std::string> directionNames = {
-    {MoveDirection::left, "left"},
-    {MoveDirection::right, "right"},
-    {MoveDirection::down, "down"},
-    {MoveDirection::up, "up"},
-};
-
 void initPlayer(Scene& scene) {
     Entity player = scene.newEntity("player");
     Entity atkHitbox = scene.newEntity();
 
     player.add<Player>();
     atkHitbox.add<AttackHitbox>(40.f, 70.f);
-    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = true;
+    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
 
     Ref<sf::Texture> tex = newRef<sf::Texture>();
     tex->loadFromFile("../assets/textures/player_sheet.png");

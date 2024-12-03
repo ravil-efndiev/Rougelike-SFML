@@ -28,3 +28,4 @@ private:
 };
 
 Entity findEntityByName(const std::vector<Entity>& entities, const std::string& name);
+std::vector<Entity> findEntitiesByName(const std::vector<Entity>& entities, const std::string& name);

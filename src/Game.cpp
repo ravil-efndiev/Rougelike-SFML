@@ -6,6 +6,7 @@
 #include "Components/SpriteSystems.hpp"
 #include "Components/CollisionSystems.hpp"
 #include "Gameplay/Player.hpp"
+#include "Gameplay/AttackHitbox.hpp"
 #include "Gameplay/Enemy.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -39,7 +40,8 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
         .addEventSystem(playerEventSystem)
 
         // enemy
-        .addSystem(enemyAISystem);
+        .addSystem(enemyAISystem)
+        .addSystem(attackHitboxSystem);
 
     initPlayer(mScene);
     spawnEnemy(mScene, EnemyType::undeadMelee);
@@ -48,9 +50,8 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
 void Game::run() {
     while (mWindow->isOpen()) {
         Time::update();
-        std::cout << 1.f / Time::dt() << "\n";
-        sf::Event event;
 
+        sf::Event event;
         while (mWindow->pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 mWindow->close();

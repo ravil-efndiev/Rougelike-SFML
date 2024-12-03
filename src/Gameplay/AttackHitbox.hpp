@@ -15,13 +15,15 @@ struct AttackHitbox {
 
     f32 width;
     f32 height;
+
+    bool tookDamage = false;
 };
 
 void attackHitboxSystem(const std::vector<Entity>& entities);
 
 void spawnAttackHitbox(
     MoveDirection direction,
-    const AttackHitbox* atkHitbox,
+    AttackHitbox* atkHitbox,
     Collider* collider,
     Transform* colliderTf,
     const Transform* holderTf,

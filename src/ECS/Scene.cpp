@@ -62,3 +62,12 @@ Entity findEntityByName(const std::vector<Entity> &entities, const std::string& 
     }
     throw std::out_of_range("no entity with name `" + name + "` found");
 }
+
+std::vector<Entity> findEntitiesByName(const std::vector<Entity> &entities, const std::string &name) {
+    auto view = 
+        entities | std::views::filter([name](Entity entity) {
+            return entity.get<Tag>()->name == name;
+        });
+
+    // TODO: convert view to vector
+}

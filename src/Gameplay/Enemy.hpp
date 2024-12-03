@@ -13,10 +13,12 @@ struct Enemy {
     MoveDirection direction = MoveDirection::right;
 
     enum State {
-        wander, chase
+        wander, chase, attack
     };
 
-    State state;
+    State state = wander;
+    f32 attackCooldown, attackCdTimer = 0;
+    bool canAttack = true;
 };
 
 void spawnEnemy(Scene& scene, EnemyType type);

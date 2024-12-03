@@ -10,6 +10,7 @@
 #include <functional>
 #include <typeindex>
 #include <cmath>
+#include <ranges>
 
 #include <SFML/Graphics.hpp>
 
