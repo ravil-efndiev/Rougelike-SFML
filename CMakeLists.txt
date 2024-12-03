@@ -15,6 +15,7 @@ add_executable(game
     src/main.cpp
     src/Game.cpp
     src/Time.cpp
+    src/Math.cpp
     src/ECS/Scene.cpp
     src/ECS/SceneRenderer.cpp
     src/Components/SpriteSystems.cpp

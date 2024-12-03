@@ -40,3 +40,9 @@ void spawnAttackHitbox(
         break;
     }
 }
+
+void turnOffHitbox(Collider *hitboxCollider) {
+    hitboxCollider->active = false;
+    hitboxCollider->bounds.width = 0.f;
+    hitboxCollider->bounds.height = 0.f;
+}

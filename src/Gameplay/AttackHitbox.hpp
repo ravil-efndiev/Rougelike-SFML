@@ -27,3 +27,5 @@ void spawnAttackHitbox(
     const Transform* holderTf,
     const Sprite* holderSprite
 );
+
+void turnOffHitbox(Collider* hitboxCollider);

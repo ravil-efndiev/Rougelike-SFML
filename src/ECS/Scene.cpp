@@ -50,3 +50,15 @@ void Scene::onEvent(const sf::Event& event) {
 std::vector<Entity> Scene::getEntities() const {
     return mEntities;
 }
+
+Entity findEntityByName(const std::vector<Entity> &entities, const std::string& name) {
+    auto it = std::find_if(entities.begin(), entities.end(), 
+        [name](Entity entity) {
+            return entity.get<Tag>()->name == name;
+        }
+    );
+    if (it != entities.end()) {
+        return *it;
+    }
+    throw std::out_of_range("no entity with name `" + name + "` found");
+}

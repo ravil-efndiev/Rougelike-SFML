@@ -48,6 +48,7 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
 void Game::run() {
     while (mWindow->isOpen()) {
         Time::update();
+        std::cout << 1.f / Time::dt() << "\n";
         sf::Event event;
 
         while (mWindow->pollEvent(event)) {
@@ -63,9 +64,15 @@ void Game::run() {
             mScene.onEvent(event);
         }
 
-        mScene.update();
+        try {
+            mScene.update();
+        }
+        catch (const std::out_of_range& err) {
+            std::cerr << err.what();
+            mWindow->close();
+        }
         
-        mWindow->clear(sf::Color::Black);
+        mWindow->clear(sf::Color(100, 100, 100, 255));
         mRenderer->render();
         mWindow->display();
     }

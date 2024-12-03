@@ -1,10 +1,7 @@
 #pragma once
 #include <Entity.hpp>
 #include <Scene.hpp>
-
-enum class MoveDirection {
-    up, down, left, right
-};
+#include "Math.hpp"
 
 struct Player {
     const float moveSpeed = 200.f;

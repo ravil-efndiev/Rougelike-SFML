@@ -27,11 +27,6 @@ static const std::unordered_map<MoveDirection, std::string> directionNames = {
     {MoveDirection::up, "up"},
 };
 
-void normalize(sf::Vector2f& vec) {
-    f32 magnitude = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
-    if (magnitude != 0) vec /= magnitude;
-}
-
 void initPlayer(Scene& scene) {
     Entity player = scene.newEntity("player");
     Entity atkHitbox = scene.newEntity();
@@ -84,9 +79,7 @@ void initPlayer(Scene& scene) {
             );
         }
         else if (frame == 3) {
-            atkHitboxCollider->bounds.width = 0.f;
-            atkHitboxCollider->bounds.height = 0.f;
-            atkHitboxCollider->active = false;
+            turnOffHitbox(atkHitboxCollider);
         }
     });
 }
@@ -128,11 +121,7 @@ void playerMovementSystem(const std::vector<Entity>& entities) {
         }
 
         if (movement == sf::Vector2f(0.f, 0.f)) {
-            for (const auto& [direction, directionName] : directionNames) {
-                if (player->direction == direction) {
-                    animator->play("idle_" + directionName);
-                }
-            }
+            animator->play("idle_" + directionNames.at(player->direction));
         }
 
         normalize(movement);
@@ -149,38 +138,34 @@ void playerCombatSystem(const std::vector<Entity>& entities) {
         auto* player = entity.get<Player>();
         auto* animator = entity.get<Animator>();
 
-        for (const auto& [direction, directionName] : directionNames) {
-            if (player->direction != direction)
-                continue;
 
-            if (player->attack && !player->combo) {
-                animator->play("attack_" + directionName + "1");
+        if (player->attack && !player->combo) {
+            animator->play("attack_" + directionNames.at(player->direction) + "1");
+            if (animator->currentAnimation->isFinished()) {
+                player->attack = false;
+                player->combo = true;
+            }
+        }
+
+        if (player->combo) {
+            player->comboTimer += 100.f * Time::dt();
+            if (player->attack || player->bufferedAttack) {
+                if (player->bufferedAttack) {
+                    animator->play("attack_" + directionNames.at(player->bufferedDirection) + "2");
+                }
+                else {
+                    animator->play("attack_" + directionNames.at(player->direction) + "2");
+                }
+
                 if (animator->currentAnimation->isFinished()) {
-                    player->attack = false;
-                    player->combo = true;
+                    if (player->bufferedAttack)
+                        player->direction = player->bufferedDirection;
+                    player->resetAttack();
                 }
             }
-
-            if (player->combo) {
-                player->comboTimer += 100.f * Time::dt();
-                if (player->attack || player->bufferedAttack) {
-                    if (player->bufferedAttack) {
-                        animator->play("attack_" + directionNames.at(player->bufferedDirection) + "2");
-                    }
-                    else {
-                        animator->play("attack_" + directionName + "2");
-                    }
-
-                    if (animator->currentAnimation->isFinished()) {
-                        if (player->bufferedAttack)
-                            player->direction = player->bufferedDirection;
-                        player->resetAttack();
-                    }
-                }
-                else if (player->comboTimer >= 100.f) {
-                    player->combo = false;
-                    player->comboTimer = 0.f;
-                }
+            else if (player->comboTimer >= 100.f) {
+                player->combo = false;
+                player->comboTimer = 0.f;
             }
         }
     }

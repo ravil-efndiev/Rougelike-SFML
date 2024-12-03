@@ -26,3 +26,5 @@ private:
     ComponentRegistry mRegistry;
     static i32 sEntityCounter;
 };
+
+Entity findEntityByName(const std::vector<Entity>& entities, const std::string& name);

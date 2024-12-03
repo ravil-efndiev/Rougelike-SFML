@@ -9,6 +9,7 @@
 #include <any>
 #include <functional>
 #include <typeindex>
+#include <cmath>
 
 #include <SFML/Graphics.hpp>
 

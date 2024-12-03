@@ -50,7 +50,7 @@ void spawnEnemy(Scene& scene, EnemyType type) {
             );
         }
         else if (frame == 4) {
-            atkHitboxCollider->active = false;
+            turnOffHitbox(atkHitboxCollider);
         }
     });
 
@@ -63,7 +63,22 @@ void enemyAISystem(const std::vector<Entity>& entities) {
     for (const auto& entity : entities) {
         if (!entity.has<Enemy>() || !entity.has<Animator>()) continue;
 
-        auto* animator =  entity.get<Animator>();
-        animator->play("attack_right");
+        auto* tf = entity.get<Transform>();
+        auto* enemy = entity.get<Enemy>();
+        auto* animator = entity.get<Animator>();
+
+        Entity player = findEntityByName(entities, "player");
+        auto* playerTf = player.get<Transform>();
+        f32 dist = distance(tf->position, playerTf->position);
+
+        if (dist <= 200.f) {
+            enemy->state = Enemy::chase;
+        }
+
+        if (enemy->state == Enemy::chase && dist > 300.f) {
+            enemy->state = Enemy::wander;
+        }
+
+        animator->play("idle_left");
     }
 }
