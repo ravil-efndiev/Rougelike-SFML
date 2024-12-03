@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include <Entity.hpp>
+#include "Math.hpp"
 #include "Time.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Transform.hpp"
@@ -28,6 +29,8 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
     mWindow->setView(*mView);
     mWindow->setFramerateLimit(60);
 
+    Random::init();
+
     mScene
         // for basic components
         .addSystem(spriteTransformSystem)
@@ -44,6 +47,7 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
         .addSystem(attackHitboxSystem);
 
     initPlayer(mScene);
+    spawnEnemy(mScene, EnemyType::undeadMelee);
     spawnEnemy(mScene, EnemyType::undeadMelee);
 }
 

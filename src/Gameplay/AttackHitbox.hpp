@@ -16,7 +16,10 @@ struct AttackHitbox {
     f32 width;
     f32 height;
 
-    bool tookDamage = false;
+    std::vector<EntityId> entitiesTookDamage;
+    bool entityTookDamage(EntityId id) const {
+        return std::find(entitiesTookDamage.begin(), entitiesTookDamage.end(), id) != entitiesTookDamage.end();
+    }
 };
 
 void attackHitboxSystem(const std::vector<Entity>& entities);

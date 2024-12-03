@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <array>
 #include <string>
 #include <unordered_map>
 #include <algorithm>
@@ -10,7 +11,7 @@
 #include <functional>
 #include <typeindex>
 #include <cmath>
-#include <ranges>
+#include <random>
 
 #include <SFML/Graphics.hpp>
 

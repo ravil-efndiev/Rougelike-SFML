@@ -17,7 +17,8 @@ struct Enemy {
     };
 
     State state = wander;
-    f32 attackCooldown, attackCdTimer = 0;
+    f32 attackCooldown {}, attackCdTimer {};
+    f32 moveSpeed {};
     bool canAttack = true;
 };
 

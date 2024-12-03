@@ -9,16 +9,17 @@
 #include <Game.hpp>
 
 struct DirectionData {
+    std::string name;
     MoveDirection direction;
     sf::Vector2f movementVec;
 };
 
-static const std::unordered_map<std::string, DirectionData> directions = {
-    {"left",  {MoveDirection::left,  { -1.f, 0.f }}},
-    {"right", {MoveDirection::right, { 1.f, 0.f }}},
-    {"down",  {MoveDirection::down,  { 0.f, 1.f }}},
-    {"up",    {MoveDirection::up,    { 0.f, -1.f }}},
-};
+static const std::array<DirectionData, 4> directions {{
+    {"left",  MoveDirection::left,  { -1.f, 0.f }},
+    {"right", MoveDirection::right, { 1.f, 0.f }},
+    {"down",  MoveDirection::down,  { 0.f, 1.f }},
+    {"up",    MoveDirection::up,    { 0.f, -1.f }},
+}};
 
 void initPlayer(Scene& scene) {
     Entity player = scene.newEntity("player");
@@ -81,10 +82,10 @@ void initPlayer(Scene& scene) {
 void move(MoveDirection dir, Player* player, Animator* animator, sf::Vector2f& movement) {
     if (player->attack) return;
     player->direction = dir;
-    for (const auto& [directionName, directionData] : directions) {
-        if (directionData.direction == dir) {
-            movement += directionData.movementVec;
-            animator->play("move_" + directionName);
+    for (const auto& [name, direction, movementVec] : directions) {
+        if (direction == dir) {
+            movement += movementVec;
+            animator->play("move_" + name);
         }
     }
 }

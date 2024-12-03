@@ -64,10 +64,11 @@ Entity findEntityByName(const std::vector<Entity> &entities, const std::string& 
 }
 
 std::vector<Entity> findEntitiesByName(const std::vector<Entity> &entities, const std::string &name) {
-    auto view = 
-        entities | std::views::filter([name](Entity entity) {
+    std::vector<Entity> filtered;
+    std::copy_if(entities.begin(), entities.end(), std::back_inserter(filtered),
+        [name](Entity entity) {
             return entity.get<Tag>()->name == name;
-        });
-
-    // TODO: convert view to vector
+        }
+    );
+    return filtered;
 }

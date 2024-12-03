@@ -9,16 +9,21 @@ void attackHitboxSystem(const std::vector<Entity>& entities) {
 
         if (!coll->active) continue;
         if (hitbox->targets == AttackHitbox::enemy) {
-
+            std::vector<Entity> enemies = findEntitiesByName(entities, "enemy");
+            for (const auto& enemy : enemies) {
+                auto* enemyColl = enemy.get<Collider>();
+                if (coll->intercepts(*enemyColl) && !hitbox->entityTookDamage(enemy.getId())) {
+                    std::cout << "hit an enemy\n";
+                    hitbox->entitiesTookDamage.push_back(enemy.getId());
+                }
+            }
         }
         else if (hitbox->targets == AttackHitbox::player) {
             Entity player = findEntityByName(entities, "player");
             auto* playerColl = player.get<Collider>();
-            if (coll->intercepts(*playerColl)) {
-                if (!hitbox->tookDamage) {
-                    std::cout << "got hit\n";
-                    hitbox->tookDamage = true;
-                }
+            if (coll->intercepts(*playerColl) && !hitbox->entityTookDamage(player.getId())) {
+                std::cout << "got hit\n";
+                hitbox->entitiesTookDamage.push_back(player.getId());
             }
         }
     }
@@ -33,7 +38,7 @@ void spawnAttackHitbox(
     const Sprite* holderSprite
 ) {
     collider->active = true;
-    atkHitbox->tookDamage = false;
+    atkHitbox->entitiesTookDamage.clear();
     switch (direction) {
     case MoveDirection::left:
         collider->bounds.width = atkHitbox->width;

@@ -7,7 +7,7 @@
 #include <Components/Transform.hpp>
 
 void spawnEnemy(Scene& scene, EnemyType type) {
-    Entity newEnemy = scene.newEntity();
+    Entity newEnemy = scene.newEntity("enemy");
     auto* enemy = newEnemy.add<Enemy>(type);
 
     auto tex = newRef<sf::Texture>();
@@ -15,14 +15,17 @@ void spawnEnemy(Scene& scene, EnemyType type) {
     case EnemyType::undeadMelee:
         tex->loadFromFile("../assets/textures/melee_undead.png");
         enemy->attackCooldown = 100.f;
+        enemy->moveSpeed = Random::rangef(80.0, 110.0);
         break;
     case EnemyType::undeadArcher:
         enemy->attackCooldown = 200.f;
+        enemy->moveSpeed = Random::rangef(50.0, 70.0);
         break;
     }
 
     newEnemy.add<Sprite>(tex);
     auto* animator = newEnemy.add<Animator>();
+    newEnemy.add<Collider>(sf::Vector2f(30, 60));
 
     Entity atkHitbox = scene.newEntity();
     atkHitbox.add<AttackHitbox>(30.f, 60.f)->targets = AttackHitbox::player;
@@ -101,7 +104,7 @@ void enemyAISystem(const std::vector<Entity>& entities) {
                 break;
             }
 
-            moveTowards(tf->position, playerTf->position, 100.f * Time::dt());
+            moveTowards(tf->position, playerTf->position, enemy->moveSpeed * Time::dt());
             if (playerTf->position.x > tf->position.x) {
                 enemy->direction = MoveDirection::right;
             }

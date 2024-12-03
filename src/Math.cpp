@@ -14,3 +14,20 @@ void moveTowards(sf::Vector2f &current, const sf::Vector2f &target, f32 step) {
     normalize(dir);
     current += step * dir;
 }
+
+std::mt19937 Random::sGenerator;
+
+void Random::init() {
+    std::random_device rd;
+    sGenerator = std::mt19937(rd());
+}
+
+f64 Random::rangef(f64 min, f64 max) {
+    std::uniform_real_distribution<> dist (min, max);
+    return dist(sGenerator);
+}
+
+i32 Random::rangei(i32 min, i32 max) {
+    std::uniform_int_distribution<> dist (min, max);
+    return dist(sGenerator);
+}
