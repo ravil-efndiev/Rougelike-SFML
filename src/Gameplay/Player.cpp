@@ -75,7 +75,8 @@ void initPlayer(Scene& scene) {
 
         if (frame == 1) {
             spawnAttackHitbox(
-                playerCmp->direction, hitbox, atkHitboxCollider, atkHitboxTf, playerTf, playerSprite
+                playerCmp->bufferedAttack ? playerCmp->bufferedDirection : playerCmp->direction,
+                hitbox, atkHitboxCollider, atkHitboxTf, playerTf, playerSprite
             );
         }
         else if (frame == 3) {
