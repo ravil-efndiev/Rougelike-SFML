@@ -186,6 +186,10 @@ MoveDirection playerMouseDir(const sf::Vector2f& playerPos, const sf::Vector2f& 
 void playerEventSystem(const sf::Event& event, const std::vector<Entity>& entities) {
     if (event.type != sf::Event::MouseButtonPressed) return;
 
+    Game* game = Game::getInstance();
+    sf::Vector2i mousePixel = sf::Mouse::getPosition(game->window());
+    sf::Vector2f mousePos = game->window().mapPixelToCoords(mousePixel);
+
     for (const auto& entity : entities) {
         if (!entity.has<Player>() 
             || !entity.has<Transform>() 
@@ -194,10 +198,6 @@ void playerEventSystem(const sf::Event& event, const std::vector<Entity>& entiti
         auto* player = entity.get<Player>();
         auto* tf = entity.get<Transform>();
         auto* sprite = entity.get<Sprite>();
-
-        Game* game = Game::getInstance();
-        sf::Vector2i mousePixel = sf::Mouse::getPosition(game->window());
-        sf::Vector2f mousePos = game->window().mapPixelToCoords(mousePixel);
         MoveDirection mouseDir = playerMouseDir(sprite->centerPosition(tf->position), mousePos);
 
         if (player->attack) {
