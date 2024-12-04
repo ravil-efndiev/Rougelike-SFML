@@ -11,11 +11,13 @@ public:
     ~Scene();
 
     Entity newEntity(const std::string& name = "", const sf::Vector2f& initialPosition = { 0.f, 0.f });
+    void removeEntity(Entity entity);
     Scene& addSystem(const System& system);
     Scene& addEventSystem(const EventSystem& system);
 
     void update();
     void onEvent(const sf::Event& event);
+    void onMainLoopEnd();
 
     std::vector<Entity> getEntities() const;
 
@@ -24,6 +26,8 @@ private:
     std::vector<System> mSystems;
     std::vector<EventSystem> mEvtSystems;
     ComponentRegistry mRegistry;
+
+    std::vector<Entity> mRemovals;
     static i32 sEntityCounter;
 };
 

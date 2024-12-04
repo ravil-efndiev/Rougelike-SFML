@@ -4,7 +4,7 @@
 #include "Math.hpp"
 
 struct Player {
-    const float moveSpeed = 200.f;
+    float moveSpeed = 200.f;
     MoveDirection direction = MoveDirection::down;
     MoveDirection bufferedDirection = MoveDirection::down;
 

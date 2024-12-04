@@ -1,42 +1,25 @@
 #include "Enemy.hpp"
 #include "AttackHitbox.hpp"
+#include "Health.hpp"
 #include <Time.hpp>
 #include <Components/Sprite.hpp>
 #include <Components/Animator.hpp>
 #include <Components/Collider.hpp>
 #include <Components/Transform.hpp>
 
-void spawnEnemy(Scene& scene, EnemyType type) {
-    Entity newEnemy = scene.newEntity("enemy");
-    auto* enemy = newEnemy.add<Enemy>(type);
-
+void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
     auto tex = newRef<sf::Texture>();
-    switch (type) {
-    case EnemyType::undeadMelee:
-        tex->loadFromFile("../assets/textures/melee_undead.png");
-        enemy->attackCooldown = 100.f;
-        enemy->moveSpeed = Random::rangef(80.0, 110.0);
-        break;
-    case EnemyType::undeadArcher:
-        enemy->attackCooldown = 200.f;
-        enemy->moveSpeed = Random::rangef(50.0, 70.0);
-        break;
-    }
-
+    tex->loadFromFile("../assets/textures/melee_undead.png");
     newEnemy.add<Sprite>(tex);
-    auto* animator = newEnemy.add<Animator>();
-    newEnemy.add<Collider>(sf::Vector2f(30, 60));
 
-    Entity atkHitbox = scene.newEntity();
+    auto* enemy = newEnemy.add<Enemy>(EnemyType::undeadMelee);
+    enemy->attackCooldown = 100.f;
+    enemy->moveSpeed = Random::rangef(80.0, 110.0);
+
     atkHitbox.add<AttackHitbox>(30.f, 60.f)->targets = AttackHitbox::player;
     atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
 
-    animator->addAnimation("idle_right",   { 50, 0, 0, 1, 48 });
-    animator->addAnimation("move_right",   { 15, 0, 1, 3, 48 });
     animator->addAnimation("attack_right", { 10, 0, 2, 4, 48 }, "attacks");
-
-    animator->addAnimation("idle_left",   { 50, 0, 3, 1, 48 });
-    animator->addAnimation("move_left",   { 15, 0, 4, 3, 48 });
     animator->addAnimation("attack_left", { 10, 0, 5, 4, 48 }, "attacks");
 
     animator->setAnimationsTrigger(animator->animCategories.at("attacks"), [newEnemy, atkHitbox](i32 frame) {
@@ -46,9 +29,6 @@ void spawnEnemy(Scene& scene, EnemyType type) {
         auto* hitbox = atkHitbox.get<AttackHitbox>();
         auto* atkHitboxCollider = atkHitbox.get<Collider>();
         auto* atkHitboxTf = atkHitbox.get<Transform>();
-        
-        const f32 horizontalWidth = 30.f;
-        const f32 horizontalHeight = 60.f;
 
         if (frame == 2) {
             spawnAttackHitbox(
@@ -59,6 +39,34 @@ void spawnEnemy(Scene& scene, EnemyType type) {
             turnOffHitbox(atkHitboxCollider);
         }
     });
+}
+
+void spawnEnemy(Scene& scene, EnemyType type) {
+    Entity newEnemy = scene.newEntity("enemy");
+    Entity atkHitbox = scene.newEntity();
+
+    auto* animator = newEnemy.add<Animator>();
+
+    switch (type) {
+    case EnemyType::undeadMelee:
+        spawnMeleeUndead(newEnemy, atkHitbox, animator);
+        break;
+    case EnemyType::undeadArcher:
+        break;
+    }
+
+    newEnemy.add<Collider>(sf::Vector2f(30, 60));
+    newEnemy.add<Health>([newEnemy, &scene](i32 newHealth) mutable {
+        if (newHealth <= 0) {
+            scene.removeEntity(newEnemy);
+        }
+    });
+
+    animator->addAnimation("idle_right",   { 50, 0, 0, 1, 48 });
+    animator->addAnimation("move_right",   { 15, 0, 1, 3, 48 });
+
+    animator->addAnimation("idle_left",   { 50, 0, 3, 1, 48 });
+    animator->addAnimation("move_left",   { 15, 0, 4, 3, 48 });
 
     auto* tf = newEnemy.get<Transform>();
     tf->position = { 200.f, 200.f };

@@ -1,11 +1,11 @@
 #pragma once
 #include <include.hpp>
 
-// for storing storages in a map instead of Ptr<void>
-// looks fucking stupid though
 class IComponentStorage {
 public:
     virtual ~IComponentStorage() = default;
+
+    virtual void remove(EntityId entitId) = 0;
 };
 
 template <class ComponentT>
@@ -37,8 +37,9 @@ public:
         return mEntityIdToIndex.find(entityId) != mEntityIdToIndex.end();
     }
 
-    void remove(EntityId entityId) {
+    void remove(EntityId entityId) override {
         if (!has(entityId)) return;
+        if (mComponents.empty()) return;
 
         size_t currentIndex = mEntityIdToIndex[entityId];
         size_t lastIndex = mComponents.size() - 1;

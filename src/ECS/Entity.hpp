@@ -3,7 +3,7 @@
 
 class Entity {
 public:
-    explicit Entity(EntityId id, Scene& scene) : mId(id), mScene(scene) {}
+    explicit Entity(EntityId id, Scene* scene) : mId(id), mScene(scene) {}
 
     EntityId getId() const { return mId; }
 
@@ -12,25 +12,25 @@ public:
 
     template <class ComponentT, class ...Args>
     ComponentT* add(Args&&... args) const {
-        return mScene.mRegistry.add<ComponentT>(mId, ComponentT(std::forward<Args>(args)...));
+        return mScene->mRegistry.add<ComponentT>(mId, ComponentT(std::forward<Args>(args)...));
     }
 
     template <class ComponentT>
     ComponentT* get() const {
-        return mScene.mRegistry.get<ComponentT>(mId);
+        return mScene->mRegistry.get<ComponentT>(mId);
     }
 
     template <class ComponentT>
     bool has() const {
-        return mScene.mRegistry.has<ComponentT>(mId);
+        return mScene->mRegistry.has<ComponentT>(mId);
     }
 
     template <class ComponentT>
     void remove() const {
-        mScene.mRegistry.remove<ComponentT>(mId);
+        mScene->mRegistry.remove<ComponentT>(mId);
     }
 
 private:
     EntityId mId;
-    Scene& mScene;
+    Scene* mScene;
 };

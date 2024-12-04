@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "Health.hpp"
 #include "AttackHitbox.hpp"
 #include <Components/Transform.hpp>
 #include <Components/Sprite.hpp>
@@ -37,6 +38,11 @@ void initPlayer(Scene& scene) {
     tf->scale = { 3.f, 3.f };
 
     player.add<Collider>(sf::Vector2f(30, 60))->debugRender = false;
+    player.add<Health>([](i32 newHealth) {
+        if (newHealth <= 0) {
+            std::cout << "dead\n";
+        }
+    });
 
     auto* animator = player.add<Animator>();
     animator->addAnimation("idle_down",  { 30, 0, 0, 3, 48 });

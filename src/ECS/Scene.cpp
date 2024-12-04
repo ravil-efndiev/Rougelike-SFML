@@ -11,7 +11,7 @@ Scene::~Scene() = default;
 
 Entity Scene::newEntity(const std::string& name, const sf::Vector2f& initialPosition)
 {
-    Entity newEntity (sEntityCounter++, *this);
+    Entity newEntity (sEntityCounter++, this);
     newEntity.add<Transform>(initialPosition, sf::Vector2f(1.f, 1.f), 0.f);
 
     if (name.empty()) {
@@ -22,6 +22,10 @@ Entity Scene::newEntity(const std::string& name, const sf::Vector2f& initialPosi
     }
     mEntities.push_back(newEntity);
     return newEntity;
+}
+
+void Scene::removeEntity(Entity entity) {
+    mRemovals.push_back(entity);
 }
 
 Scene& Scene::addSystem(const System& system) {
@@ -46,6 +50,13 @@ void Scene::onEvent(const sf::Event& event) {
     }
 }
 
+void Scene::onMainLoopEnd() {
+    for (const auto& entity : mRemovals){
+        mEntities.erase(std::remove(mEntities.begin(), mEntities.end(), entity), mEntities.end());
+        mRegistry.clear(entity.getId());
+    }
+    mRemovals.clear();
+}
 
 std::vector<Entity> Scene::getEntities() const {
     return mEntities;

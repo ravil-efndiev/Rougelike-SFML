@@ -2,6 +2,7 @@
 #include "Entity.hpp"
 #include <Components/Sprite.hpp>
 #include <Components/Collider.hpp>
+#include <Components/Tag.hpp>
 
 SceneRenderer::SceneRenderer(Scene& scene, sf::RenderWindow& window) 
     : mScene(scene), mWindow(window) {}

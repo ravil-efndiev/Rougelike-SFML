@@ -26,17 +26,23 @@ public:
         getOrCreateStorage<ComponentT>().remove(entityId);
     }
 
+    void clear(EntityId entityId) {
+        for (auto& [_, storage] : mAllStorages) {
+            storage->remove(entityId);
+        }
+    }
+
 private:
     template <class ComponentT>
     ComponentStorage<ComponentT>& getOrCreateStorage() {
         std::type_index type = typeid(ComponentT);
 
         if (mAllStorages.find(type) == mAllStorages.end()) {
-            mAllStorages.emplace(type, newPtr<ComponentStorage<ComponentT>>());
+            mAllStorages.emplace(type, newRef<ComponentStorage<ComponentT>>());
         }
 
         return *static_cast<ComponentStorage<ComponentT>*>(mAllStorages.at(type).get());
     }
 
-    std::unordered_map<std::type_index, Ptr<IComponentStorage>> mAllStorages;
+    std::unordered_map<std::type_index, Ref<IComponentStorage>> mAllStorages;
 };

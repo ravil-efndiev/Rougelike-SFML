@@ -48,7 +48,6 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
 
     initPlayer(mScene);
     spawnEnemy(mScene, EnemyType::undeadMelee);
-    spawnEnemy(mScene, EnemyType::undeadMelee);
 }
 
 void Game::run() {
@@ -80,6 +79,8 @@ void Game::run() {
         mWindow->clear(sf::Color(100, 100, 100, 255));
         mRenderer->render();
         mWindow->display();
+
+        mScene.onMainLoopEnd();
     }
 }
 
