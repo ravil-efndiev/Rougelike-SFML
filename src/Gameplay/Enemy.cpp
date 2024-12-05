@@ -7,20 +7,8 @@
 #include <Components/Collider.hpp>
 #include <Components/Transform.hpp>
 
-void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
-    auto tex = newRef<sf::Texture>();
-    tex->loadFromFile("../assets/textures/melee_undead.png");
-    newEnemy.add<Sprite>(tex);
-
-    auto* enemy = newEnemy.add<Enemy>(EnemyType::undeadMelee);
-    enemy->attackCooldown = 100.f;
-    enemy->moveSpeed = Random::rangef(80.0, 110.0);
-    enemy->seeRadius = 300.f;
-    enemy->forgetRadius = 400.f;
-
-    atkHitbox.add<AttackHitbox>(30.f, 60.f)->targets = AttackHitbox::player;
-    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
-
+// generic for all melee enemies
+void setMeleeAttackAnimations(Entity newEnemy, Entity atkHitbox, Animator* animator) {
     animator->addAnimation("attack_right", { 10, 0, 2, 4, 48 }, "attacks");
     animator->addAnimation("attack_left", { 10, 0, 5, 4, 48 }, "attacks");
 
@@ -41,6 +29,24 @@ void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
             turnOffHitbox(atkHitboxCollider);
         }
     });
+}
+
+// specific stats for this enemy type
+void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
+    auto tex = newRef<sf::Texture>();
+    tex->loadFromFile("../assets/textures/melee_undead.png");
+    newEnemy.add<Sprite>(tex);
+
+    auto* enemy = newEnemy.add<Enemy>(EnemyType::undeadMelee);
+    enemy->attackCooldown = 100.f;
+    enemy->moveSpeed = Random::rangef(80.0, 110.0);
+    enemy->seeRadius = 300.f;
+    enemy->forgetRadius = 400.f;
+
+    atkHitbox.add<AttackHitbox>(30.f, 60.f)->targets = AttackHitbox::player;
+    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
+
+    setMeleeAttackAnimations(newEnemy, atkHitbox, animator);
 }
 
 void spawnEnemy(Scene& scene, EnemyType type, const sf::Vector2f& position) {

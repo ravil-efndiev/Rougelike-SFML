@@ -11,6 +11,7 @@
 #include <functional>
 #include <typeindex>
 #include <cmath>
+#include <cassert>
 #include <random>
 
 #include <SFML/Graphics.hpp>

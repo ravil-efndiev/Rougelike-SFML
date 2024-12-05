@@ -7,7 +7,7 @@ if(UNIX)
     set(CMAKE_TOOLCHAIN_FILE ${HOME}/tools/vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "")
     if(LINUX)
         set(SFML_DIR ~/tools/vcpkg/installed/x64-linux/share/sfml)
-        set(FREETYPE_DIR ${HOME}/tools/vcpkg/installed/x64-linux/share/freetype)
+        set(FREETYPE_DIR ~/tools/vcpkg/installed/x64-linux/share/freetype)
     endif()
 endif()
 
