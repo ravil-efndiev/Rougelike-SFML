@@ -18,10 +18,11 @@ struct Enemy {
 
     State state = wander;
     f32 attackCooldown {}, attackCdTimer {};
+    f32 seeRadius {}, forgetRadius {};
     f32 moveSpeed {};
     bool canAttack = true;
 };
 
-void spawnEnemy(Scene& scene, EnemyType type);
+void spawnEnemy(Scene& scene, EnemyType type, const sf::Vector2f& position);
 
 void enemyAISystem(const std::vector<Entity>& entities);

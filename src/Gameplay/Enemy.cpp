@@ -15,6 +15,8 @@ void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
     auto* enemy = newEnemy.add<Enemy>(EnemyType::undeadMelee);
     enemy->attackCooldown = 100.f;
     enemy->moveSpeed = Random::rangef(80.0, 110.0);
+    enemy->seeRadius = 300.f;
+    enemy->forgetRadius = 400.f;
 
     atkHitbox.add<AttackHitbox>(30.f, 60.f)->targets = AttackHitbox::player;
     atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
@@ -41,7 +43,7 @@ void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
     });
 }
 
-void spawnEnemy(Scene& scene, EnemyType type) {
+void spawnEnemy(Scene& scene, EnemyType type, const sf::Vector2f& position) {
     Entity newEnemy = scene.newEntity("enemy");
     Entity atkHitbox = scene.newEntity();
 
@@ -69,8 +71,60 @@ void spawnEnemy(Scene& scene, EnemyType type) {
     animator->addAnimation("move_left",   { 15, 0, 4, 3, 48 });
 
     auto* tf = newEnemy.get<Transform>();
-    tf->position = { 200.f, 200.f };
+    tf->position = position;
     tf->scale = { 3.f, 3.f };
+}
+
+void meleeEnemyAi(Enemy* enemy, Animator* animator, Transform* tf, const Transform* playerTf) {
+    f32 dist = distance(tf->position, playerTf->position);
+
+    if (dist <= enemy->seeRadius && enemy->state != Enemy::attack) {
+        enemy->state = Enemy::chase;
+    }
+
+    if (enemy->state == Enemy::chase && dist > enemy->forgetRadius) {
+        enemy->state = Enemy::wander;
+    }
+
+    if (enemy->state == Enemy::chase && enemy->canAttack && dist < 30.f) {
+        enemy->state = Enemy::attack;
+    }
+
+    if (!enemy->canAttack) {
+        enemy->attackCdTimer += 100.f * Time::dt();
+        if (enemy->attackCdTimer >= enemy->attackCooldown) {
+            enemy->canAttack = true;
+            enemy->attackCdTimer = 0.f;
+        }
+    }
+
+    switch (enemy->state) {
+    case Enemy::chase:
+        if (dist < 30.f) {
+            animator->play("idle_" + directionNames.at(enemy->direction));
+            break;
+        }
+
+        moveTowards(tf->position, playerTf->position, enemy->moveSpeed * Time::dt());
+        if (playerTf->position.x > tf->position.x) {
+            enemy->direction = MoveDirection::right;
+        }
+        else {
+            enemy->direction = MoveDirection::left;
+        }
+        animator->play("move_" + directionNames.at(enemy->direction));
+        break;
+    case Enemy::wander:
+        animator->play("idle_" + directionNames.at(enemy->direction));
+        break;
+    case Enemy::attack:
+        animator->play("attack_" + directionNames.at(enemy->direction));
+        if (animator->currentAnimation->isFinished()) {
+            enemy->state = Enemy::chase;
+            enemy->canAttack = false;
+        }
+        break;
+    }
 }
 
 void enemyAISystem(const std::vector<Entity>& entities) {
@@ -83,55 +137,11 @@ void enemyAISystem(const std::vector<Entity>& entities) {
 
         Entity player = findEntityByName(entities, "player");
         auto* playerTf = player.get<Transform>();
-        f32 dist = distance(tf->position, playerTf->position);
-
-        if (dist <= 200.f && enemy->state != Enemy::attack) {
-            enemy->state = Enemy::chase;
-        }
-
-        if (enemy->state == Enemy::chase && dist > 300.f) {
-            enemy->state = Enemy::wander;
-        }
-
-        if (enemy->state == Enemy::chase && enemy->canAttack && dist < 30.f) {
-            enemy->state = Enemy::attack;
-        }
-
-        if (!enemy->canAttack) {
-            enemy->attackCdTimer += 100.f * Time::dt();
-            if (enemy->attackCdTimer >= enemy->attackCooldown) {
-                enemy->canAttack = true;
-                enemy->attackCdTimer = 0.f;
-            }
-        }
-
-        switch (enemy->state) {
-        case Enemy::chase:
-            if (dist < 30.f) {
-                animator->play("idle_" + directionNames.at(enemy->direction));
-                break;
-            }
-
-            moveTowards(tf->position, playerTf->position, enemy->moveSpeed * Time::dt());
-            if (playerTf->position.x > tf->position.x) {
-                enemy->direction = MoveDirection::right;
-            }
-            else {
-                enemy->direction = MoveDirection::left;
-            }
-            animator->play("move_" + directionNames.at(enemy->direction));
-            break;
-        case Enemy::wander:
-            animator->play("idle_" + directionNames.at(enemy->direction));
-            break;
-        case Enemy::attack:
-            animator->play("attack_" + directionNames.at(enemy->direction));
-            if (animator->currentAnimation->isFinished()) {
-                enemy->state = Enemy::chase;
-                enemy->canAttack = false;
-            }
+        
+        switch (enemy->type) {
+        case EnemyType::undeadMelee:
+            meleeEnemyAi(enemy, animator, tf, playerTf);
             break;
         }
-
     }
 }

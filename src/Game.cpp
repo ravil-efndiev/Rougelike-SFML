@@ -32,22 +32,19 @@ Game::Game(u16 winWidth, u16 winHeight, const sf::String& winTitle) {
     Random::init();
 
     mScene
-        // for basic components
         .addSystem(spriteTransformSystem)
         .addSystem(spriteAnimationSystem)
         .addSystem(colliderPositionSystem)
 
-        // player
         .addSystem(playerMovementSystem)
         .addSystem(playerCombatSystem)
         .addEventSystem(playerEventSystem)
-
-        // enemy
         .addSystem(enemyAISystem)
         .addSystem(attackHitboxSystem);
 
     initPlayer(mScene);
-    spawnEnemy(mScene, EnemyType::undeadMelee);
+    for (i32 i = 0; i < 5; i++)
+        spawnEnemy(mScene, EnemyType::undeadMelee, {Random::rangef(300.0, 600.0), Random::rangef(10.0, 300.0)});
 }
 
 void Game::run() {
