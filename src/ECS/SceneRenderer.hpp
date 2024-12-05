@@ -14,5 +14,6 @@ private:
 
 private:
     void renderSprites(const std::vector<Entity>& entities);
+    void renderTilemaps(const std::vector<Entity>& entities);
     void renderDebug(const std::vector<Entity>& entities);
 };

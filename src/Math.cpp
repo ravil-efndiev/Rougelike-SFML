@@ -22,9 +22,9 @@ void Random::init() {
     sGenerator = std::mt19937(rd());
 }
 
-f64 Random::rangef(f64 min, f64 max) {
+f32 Random::rangef(f32 min, f32 max) {
     std::uniform_real_distribution<> dist (min, max);
-    return dist(sGenerator);
+    return static_cast<f32>(dist(sGenerator));
 }
 
 i32 Random::rangei(i32 min, i32 max) {

@@ -8,12 +8,16 @@ public:
 
     template<class ComponentT>
     ComponentT* add(EntityId entityId, const ComponentT& component) {
-        return getOrCreateStorage<ComponentT>().add(entityId, component);
+        auto* cmp = getOrCreateStorage<ComponentT>().add(entityId, component);
+        R_ASSERT(cmp, "component already exist on an entity")
+        return cmp;
     }
 
     template<class ComponentT>
     ComponentT* get(EntityId entityId) {
-        return getOrCreateStorage<ComponentT>().get(entityId);
+        auto* cmp = getOrCreateStorage<ComponentT>().get(entityId);
+        R_ASSERT(cmp, "component does not exist")
+        return cmp;
     }
 
     template<class ComponentT>

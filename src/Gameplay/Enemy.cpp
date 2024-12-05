@@ -39,7 +39,7 @@ void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
 
     auto* enemy = newEnemy.add<Enemy>(EnemyType::undeadMelee);
     enemy->attackCooldown = 100.f;
-    enemy->moveSpeed = Random::rangef(80.0, 110.0);
+    enemy->moveSpeed = Random::rangef(80.f, 110.f);
     enemy->seeRadius = 300.f;
     enemy->forgetRadius = 400.f;
 

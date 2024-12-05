@@ -16,6 +16,11 @@
 
 #include <SFML/Graphics.hpp>
 
+#define R_ASSERT(condition, errMessage) if (!condition) { \
+    std::cerr << errMessage << "\n"; \
+    std::abort(); \
+}
+
 typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;

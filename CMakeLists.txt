@@ -25,6 +25,7 @@ add_executable(game
     src/Gameplay/Player.cpp
     src/Gameplay/Enemy.cpp
     src/Gameplay/AttackHitbox.cpp
+    src/Gameplay/Tilemap.cpp
 )
 
 target_include_directories(game PUBLIC

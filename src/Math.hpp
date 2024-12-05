@@ -21,7 +21,7 @@ void moveTowards(sf::Vector2f& current, const sf::Vector2f& target, f32 step);
 class Random {
 public:
     static void init();
-    static f64 rangef(f64 min, f64 max);
+    static f32 rangef(f32 min, f32 max);
     static i32 rangei(i32 min, i32 max);
 
 private:
