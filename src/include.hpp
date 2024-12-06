@@ -16,6 +16,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#define R_DEBUG true
+
 #define R_ASSERT(condition, errMessage) if (!condition) { \
     std::cerr << errMessage << "\n"; \
     std::abort(); \

@@ -27,7 +27,7 @@ void initPlayer(Scene& scene) {
     Entity atkHitbox = scene.newEntity();
 
     player.add<Player>();
-    atkHitbox.add<AttackHitbox>(40.f, 70.f);
+    atkHitbox.add<AttackHitbox>(40.f, 70.f, 24);
     atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
 
     Ref<sf::Texture> tex = newRef<sf::Texture>();
@@ -42,7 +42,7 @@ void initPlayer(Scene& scene) {
         if (newHealth <= 0) {
             std::cout << "dead\n";
         }
-    });
+    }, 100);
 
     auto* animator = player.add<Animator>();
     animator->addAnimation("idle_down",  { 30, 0, 0, 3, 48 });
@@ -51,9 +51,9 @@ void initPlayer(Scene& scene) {
     animator->addAnimation("idle_left",  { 30, 0, 6, 3, 48 });
 
     animator->addAnimation("move_down",  { 10, 0, 1, 5, 48 });
-    animator->addAnimation("move_right", { 10, 0, 3, 5, 48 });
+    animator->addAnimation("move_right", { 10, 0, 3, 3, 48 });
     animator->addAnimation("move_up",    { 10, 0, 5, 5, 48 });
-    animator->addAnimation("move_left",  { 10, 0, 7, 5, 48 });
+    animator->addAnimation("move_left",  { 10, 0, 7, 3, 48 });
 
     animator->addAnimation("attack_right1", { 10, 0, 8, 3, 48 }, "attacks");
     animator->addAnimation("attack_right2", { 10, 4, 8, 7, 48 }, "attacks");

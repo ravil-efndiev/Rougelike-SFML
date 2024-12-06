@@ -14,7 +14,7 @@ void attackHitboxSystem(const std::vector<Entity>& entities) {
             for (const auto& enemy : enemies) {
                 auto* enemyColl = enemy.get<Collider>();
                 if (coll->intercepts(*enemyColl) && !hitbox->entityTookDamage(enemy.getId())) {
-                    enemy.get<Health>()->damage(34);
+                    enemy.get<Health>()->damage(hitbox->damage);
                     hitbox->entitiesTookDamage.push_back(enemy.getId());
                 }
             }
@@ -23,7 +23,7 @@ void attackHitboxSystem(const std::vector<Entity>& entities) {
             Entity player = findEntityByName(entities, "player");
             auto* playerColl = player.get<Collider>();
             if (coll->intercepts(*playerColl) && !hitbox->entityTookDamage(player.getId())) {
-                player.get<Health>()->damage(20);
+                player.get<Health>()->damage(hitbox->damage);
                 hitbox->entitiesTookDamage.push_back(player.getId());
             }
         }

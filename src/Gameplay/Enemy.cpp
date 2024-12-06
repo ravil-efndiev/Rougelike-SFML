@@ -43,7 +43,7 @@ void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
     enemy->seeRadius = 300.f;
     enemy->forgetRadius = 400.f;
 
-    atkHitbox.add<AttackHitbox>(30.f, 60.f)->targets = AttackHitbox::player;
+    atkHitbox.add<AttackHitbox>(30.f, 60.f, 20)->targets = AttackHitbox::player;
     atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
 
     setMeleeAttackAnimations(newEnemy, atkHitbox, animator);
@@ -68,7 +68,7 @@ void spawnEnemy(Scene& scene, EnemyType type, const sf::Vector2f& position) {
         if (newHealth <= 0) {
             scene.removeEntity(newEnemy);
         }
-    });
+    }, 50);
 
     animator->addAnimation("idle_right",   { 50, 0, 0, 1, 48 });
     animator->addAnimation("move_right",   { 15, 0, 1, 3, 48 });

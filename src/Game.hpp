@@ -5,10 +5,10 @@
 
 class Game {
 public:
-    static Game* create(u16 winWidth, u16 winHeight, const sf::String& winTitle);
+    static Game* create();
     static Game* getInstance();
 
-    Game(u16 winWidth, u16 winHeight, const sf::String& winTitle);
+    Game();
     ~Game() {}
 
     void run();

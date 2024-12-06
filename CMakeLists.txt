@@ -34,4 +34,7 @@ target_include_directories(game PUBLIC
 )
 
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
+find_package(ImGui-SFML CONFIG REQUIRED)
+
 target_link_libraries(game PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+target_link_libraries(game PRIVATE ImGui-SFML::ImGui-SFML)

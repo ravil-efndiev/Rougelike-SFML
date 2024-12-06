@@ -1,12 +1,16 @@
 #include "Time.hpp"
 
 sf::Clock Time::sClock {};
-f32 Time::sDeltaTime {};
+sf::Time Time::sDeltaTime {};
 
 void Time::update() {
-    sDeltaTime = sClock.restart().asSeconds();
+    sDeltaTime = sClock.restart();
 }
 
 f32 Time::dt() {
+    return sDeltaTime.asSeconds();
+}
+
+sf::Time Time::sfDt() {
     return sDeltaTime;
 }

@@ -7,7 +7,8 @@
 #include "Player.hpp"
 
 struct AttackHitbox { 
-    AttackHitbox(f32 width, f32 height) : width(width), height(height) {}
+    AttackHitbox(f32 width, f32 height, i32 damage) 
+        : width(width), height(height), damage(damage) {}
 
     enum AttackTarget { 
         player, enemy 
@@ -15,6 +16,8 @@ struct AttackHitbox {
 
     f32 width;
     f32 height;
+
+    i32 damage;
 
     std::vector<EntityId> entitiesTookDamage;
     bool entityTookDamage(EntityId id) const {
