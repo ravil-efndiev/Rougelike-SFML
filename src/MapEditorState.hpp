@@ -7,11 +7,17 @@
 
 class MapEditorState : public IState {
 public:
-    MapEditorState(Scene& scene, const std::string& tilesetPath, const std::string& texturePath);
+    MapEditorState(
+        Scene& scene,
+        const std::string& tilemapPath, 
+        const std::string& tilesetPath, 
+        const std::string& texturePath
+    );
     ~MapEditorState() = default;
 
     void update() override;
     void renderUI() override;
+    void onEvent(const sf::Event& event) override;
 
 private:
     void loadTileset();
@@ -19,6 +25,7 @@ private:
 
 private:
     std::string mTilesetPath;
+    std::string mTilemapPath;
     i32 mTileSize;
 
     std::unordered_map<std::string, sf::Vector2i> mTileset;

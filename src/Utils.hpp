@@ -1,4 +1,4 @@
 #pragma once
-#include "Game.hpp"
+#include "Application.hpp"
 
 sf::Vector2f getMousePosition();

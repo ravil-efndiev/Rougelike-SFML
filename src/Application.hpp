@@ -4,17 +4,17 @@
 #include "Components/Animator.hpp"
 #include "State.hpp"
 
-class Game {
+class Application {
 public:
     enum State {
         game, editor
     };
 
-    static Game* create(State state);
-    static Game* getInstance();
+    static Application* create(State state, const std::string& editorFilePath = "");
+    static Application* getInstance();
 
-    Game(State state);
-    ~Game() {}
+    Application(State state, const std::string& editorFilePath);
+    ~Application() {}
 
     void run();
 
@@ -22,7 +22,7 @@ public:
     sf::View& camera();
 
 private:
-    static Game* sInstance;
+    static Application* sInstance;
 
     Ptr<sf::RenderWindow> mWindow;
     Ptr<SceneRenderer> mRenderer;

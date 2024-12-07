@@ -7,7 +7,7 @@
 #include <Components/Tag.hpp>
 #include <Components/Animator.hpp>
 #include <Time.hpp>
-#include <Game.hpp>
+#include <Application.hpp>
 #include <Utils.hpp>
 
 struct DirectionData {
@@ -139,7 +139,6 @@ void playerCombatSystem(const std::vector<Entity>& entities) {
         
         auto* player = entity.get<Player>();
         auto* animator = entity.get<Animator>();
-
 
         if (player->attack && !player->combo) {
             animator->play("attack_" + directionNames.at(player->direction) + "1");

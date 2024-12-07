@@ -1,11 +1,17 @@
 #include "MapEditorState.hpp"
+#include "Math.hpp"
+#include "Time.hpp"
 #include <yaml-cpp/yaml.h>
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include <Utils.hpp>
 
-MapEditorState::MapEditorState(Scene& scene, const std::string& tilesetPath, const std::string& texturePath) 
-        : mTilesetPath(tilesetPath), mScene(scene) {
+MapEditorState::MapEditorState(
+    Scene& scene,
+    const std::string& tilemapPath, 
+    const std::string& tilesetPath, 
+    const std::string& texturePath
+) : mTilemapPath(tilemapPath), mTilesetPath(tilesetPath), mScene(scene) {
     loadTileset();
 
     Ref<sf::Texture> tex = newRef<sf::Texture>();
@@ -13,6 +19,14 @@ MapEditorState::MapEditorState(Scene& scene, const std::string& tilesetPath, con
 
     mTilemapEntt = mScene.newEntity("tilemap");
     mTilemap = mTilemapEntt.add<Tilemap>(tex, mTileSize);
+
+    std::ifstream tlmFile (mTilemapPath);
+    if (tlmFile.is_open()) {
+        YAML::Node tlmData = YAML::LoadFile(mTilemapPath);
+        if (tlmData["tiles"]) {
+            mTilemap->loadFromFile(mTilemapPath);
+        }
+    }
 }
 
 void MapEditorState::loadTileset() {
@@ -38,6 +52,24 @@ void MapEditorState::loadTileset() {
 }
 
 void MapEditorState::update() {
+    Application* app = Application::getInstance();
+    sf::Vector2f cameraMoveVec;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        cameraMoveVec.y -= 1.f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        cameraMoveVec.y += 1.f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        cameraMoveVec.x += 1.f;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        cameraMoveVec.x -= 1.f;
+    }
+    normalize(cameraMoveVec);
+    app->camera().move(cameraMoveVec * 400.f * Time::dt());
+    app->window().setView(app->camera());
+
     if (ImGui::GetIO().WantCaptureMouse) return;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = mTilemap->simplifyPosition(getMousePosition());
@@ -63,10 +95,18 @@ void MapEditorState::update() {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
         sf::Vector2i mousePos = mTilemap->simplifyPosition(getMousePosition());
 
-        mTilemap->setTile(mousePos, sf::IntRect(0, 0, 0, 0), "");
+        mTilemap->removeTile(mousePos);
     }
 
     mScene.update();
+}
+
+void MapEditorState::onEvent(const sf::Event& event) {
+    if (event.type != sf::Event::KeyPressed) return;
+
+    if (event.key.code == sf::Keyboard::S && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        mTilemap->saveToFile(mTilemapPath);
+    }
 }
 
 void MapEditorState::renderUI() {

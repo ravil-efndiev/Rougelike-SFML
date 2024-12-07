@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "Application.hpp"
 #include <Entity.hpp>
 #include "Math.hpp"
 #include "Time.hpp"
@@ -8,20 +8,20 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 
-Game* Game::sInstance {};
+Application* Application::sInstance {};
 
-Game* Game::create(State state) {
-    sInstance = new Game(state);
+Application* Application::create(State state, const std::string& editorFilePath) {
+    sInstance = new Application(state, editorFilePath);
     return sInstance;
 }
 
-Game* Game::getInstance() {
+Application* Application::getInstance() {
     return sInstance;
 }
 
-Game::Game(State state) {
-    sf::VideoMode winSize = R_DEBUG ? sf::VideoMode(800, 600) : sf::VideoMode();
-    u32 winStyle = R_DEBUG ? sf::Style::Default : sf::Style::Fullscreen;
+Application::Application(State state, const std::string& editorFilePath) {
+    sf::VideoMode winSize = R_DEV ? sf::VideoMode(800, 600) : sf::VideoMode();
+    u32 winStyle = R_DEV ? sf::Style::Default : sf::Style::Fullscreen;
     mWindow = newPtr<sf::RenderWindow>(winSize, "game", winStyle);
     mView = newPtr<sf::View>(mWindow->getDefaultView());
     mRenderer = newPtr<SceneRenderer>(mScene, *mWindow);
@@ -36,11 +36,16 @@ Game::Game(State state) {
         mState = newPtr<GameState>(mScene);
     }
     else if (state == editor) {
-        mState = newPtr<MapEditorState>(mScene, "../assets/map/test_set.yml", "../assets/textures/tilemap.png");
+        mState = newPtr<MapEditorState>(
+            mScene,
+            editorFilePath,
+            "../assets/map/test_set.yml",
+            "../assets/textures/tilemap.png"
+        );
     }
 }
 
-void Game::run() {
+void Application::run() {
     while (mWindow->isOpen()) {
         Time::update();
 
@@ -56,6 +61,7 @@ void Game::run() {
                 mWindow->setView(*mView);
             }
 
+            mState->onEvent(event);
             mScene.onEvent(event);
         }
 
@@ -73,10 +79,10 @@ void Game::run() {
     }
 }
 
-sf::RenderWindow& Game::window() {
+sf::RenderWindow& Application::window() {
     return *mWindow;
 }
 
-sf::View& Game::camera() {
+sf::View& Application::camera() {
     return *mView;
 }

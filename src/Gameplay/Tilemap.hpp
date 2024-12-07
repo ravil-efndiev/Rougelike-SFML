@@ -32,7 +32,8 @@ struct Tilemap {
     u32 tileSize;
 
     void setTile(const sf::Vector2i& pos, const sf::IntRect& tileSubTexture, const std::string& name);
+    void removeTile(const sf::Vector2i& pos);
     sf::Vector2i simplifyPosition(const sf::Vector2f& pos);
+    void saveToFile(const std::string& path);
+    void loadFromFile(const std::string& path);
 };
-
-void createTilemap(Scene& scene);

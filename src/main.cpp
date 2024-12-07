@@ -1,15 +1,20 @@
-#include "Game.hpp"
+#include "Application.hpp"
 
 i32 main(i32 argc, char* argv[]) {
-    Game* game;
-    if (argc > 1 && std::string(argv[1]) == "edit") {
-        game = Game::create(Game::editor);
+    Application* game;
+#if R_DEV == true
+    if (argc > 2 && std::string(argv[1]) == "edit") {
+        game = Application::create(Application::editor, std::string(argv[2]));
         game->run();
     }
     else {
-        game = Game::create(Game::game);
+        game = Application::create(Application::game);
         game->run();
     }
+#else
+    game = Application::create(Application::game);
+#endif
+
     delete game;
     return 0;
 }
