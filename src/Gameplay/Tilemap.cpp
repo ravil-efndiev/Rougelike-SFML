@@ -69,7 +69,6 @@ void Tilemap::removeTile(const sf::Vector2i& pos) {
     );
 }
 
-
 void Tilemap::saveToFile(const std::string& path) {
     YAML::Emitter emitter;
     emitter << YAML::BeginMap;

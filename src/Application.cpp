@@ -46,6 +46,7 @@ Application::Application(State state, const std::string& editorFilePath) {
 }
 
 void Application::run() {
+    f32 accumulator = 0.f;
     while (mWindow->isOpen()) {
         Time::update();
 
@@ -67,6 +68,12 @@ void Application::run() {
 
         mState->update();
         ImGui::SFML::Update(*mWindow, Time::sfDt());
+
+        accumulator += Time::dt();
+        while (accumulator >= Time::fixedDt()) {
+            mScene.tick();
+            accumulator -= Time::fixedDt();
+        }
 
         mState->renderUI();
 

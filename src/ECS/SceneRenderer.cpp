@@ -9,9 +9,9 @@ SceneRenderer::SceneRenderer(Scene& scene, sf::RenderWindow& window)
     : mScene(scene), mWindow(window) {}
 
 void SceneRenderer::render() {
+    renderTilemaps(mScene.getEntities());
     renderSprites(mScene.getEntities());
     renderDebug(mScene.getEntities());
-    renderTilemaps(mScene.getEntities());
 }
 
 void SceneRenderer::renderSprites(const std::vector<Entity>& entities) {

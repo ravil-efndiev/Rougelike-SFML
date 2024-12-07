@@ -101,9 +101,11 @@ void playerMovementSystem(const std::vector<Entity>& entities) {
     for (const auto& entity : entities) {
         if (!entity.has<Player>() 
             || !entity.has<Transform>() 
+            || !entity.has<Sprite>() 
             || !entity.has<Animator>()) continue;
 
         auto* tf = entity.get<Transform>();
+        auto* sprite = entity.get<Sprite>();
         auto* player = entity.get<Player>();
         auto* animator = entity.get<Animator>();
 
@@ -128,6 +130,21 @@ void playerMovementSystem(const std::vector<Entity>& entities) {
 
         normalize(movement);
         tf->position += movement * player->moveSpeed * Time::dt();
+    }
+}
+
+void playerCameraSystem(const std::vector<Entity>& entities) {
+    for (const auto& entity : entities) {
+        if (!entity.has<Player>() 
+            || !entity.has<Transform>() 
+            || !entity.has<Sprite>()) continue;
+
+        auto* tf = entity.get<Transform>();
+        auto* sprite = entity.get<Sprite>();
+        
+        Application* app = Application::getInstance();
+        app->camera().setCenter(sprite->centerPosition(tf->position));
+        app->window().setView(app->camera());
     }
 }
 

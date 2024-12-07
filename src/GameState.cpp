@@ -16,10 +16,17 @@ GameState::GameState(Scene& scene) : mScene(scene) {
         .addSystem(colliderPositionSystem)
 
         .addSystem(playerMovementSystem)
+        .addFixedSystem(playerCameraSystem)
         .addSystem(playerCombatSystem)
         .addEventSystem(playerEventSystem)
         .addSystem(enemyAISystem)
+        
         .addSystem(attackHitboxSystem);
+
+    Entity tlm = mScene.newEntity();
+    Ref<sf::Texture> tex = newRef<sf::Texture>();
+    tex->loadFromFile("../assets/textures/tilemap.png");
+    tlm.add<Tilemap>(tex, 24)->loadFromFile("../assets/map/test_map.yml");
 
     initPlayer(mScene);
     for (i32 i = 0; i < 5; i++)

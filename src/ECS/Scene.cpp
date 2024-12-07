@@ -33,6 +33,11 @@ Scene& Scene::addSystem(const System& system) {
     return *this;
 }
 
+Scene& Scene::addFixedSystem(const System& system) {
+    mFixedSystems.push_back(system);
+    return *this;
+}
+
 Scene& Scene::addEventSystem(const EventSystem& system) {
     mEvtSystems.push_back(system);
     return *this;
@@ -43,6 +48,13 @@ void Scene::update() {
         system(mEntities);
     }
 }
+
+void Scene::tick() {
+    for (const auto& system : mFixedSystems) {
+        system(mEntities);
+    }
+}
+
 
 void Scene::onEvent(const sf::Event& event) {
     for (const auto& system : mEvtSystems) {
