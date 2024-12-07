@@ -2,22 +2,16 @@
 #include <Entity.hpp>
 #include "Math.hpp"
 #include "Time.hpp"
-#include "Components/Sprite.hpp"
-#include "Components/Transform.hpp"
-#include "Components/SpriteSystems.hpp"
-#include "Components/CollisionSystems.hpp"
-#include "Gameplay/Player.hpp"
-#include "Gameplay/AttackHitbox.hpp"
-#include "Gameplay/Enemy.hpp"
-#include "Gameplay/Tilemap.hpp"
+#include "MapEditorState.hpp"
+#include "GameState.hpp"
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
 #include <imgui-SFML.h>
 
 Game* Game::sInstance {};
 
-Game* Game::create() {
-    sInstance = new Game();
+Game* Game::create(State state) {
+    sInstance = new Game(state);
     return sInstance;
 }
 
@@ -25,9 +19,9 @@ Game* Game::getInstance() {
     return sInstance;
 }
 
-Game::Game() {
+Game::Game(State state) {
     sf::VideoMode winSize = R_DEBUG ? sf::VideoMode(800, 600) : sf::VideoMode();
-    u32 winStyle = R_DEBUG ? sf::Style::None : sf::Style::Fullscreen;
+    u32 winStyle = R_DEBUG ? sf::Style::Default : sf::Style::Fullscreen;
     mWindow = newPtr<sf::RenderWindow>(winSize, "game", winStyle);
     mView = newPtr<sf::View>(mWindow->getDefaultView());
     mRenderer = newPtr<SceneRenderer>(mScene, *mWindow);
@@ -35,22 +29,15 @@ Game::Game() {
     mWindow->setFramerateLimit(60);
 
     Random::init();
-    (void)ImGui::SFML::Init(*mWindow);
+    bool imguiInitialized = ImGui::SFML::Init(*mWindow);
+    R_ASSERT(imguiInitialized, "ImGui::SFML::Init error")
 
-    mScene
-        .addSystem(spriteTransformSystem)
-        .addSystem(spriteAnimationSystem)
-        .addSystem(colliderPositionSystem)
-
-        .addSystem(playerMovementSystem)
-        .addSystem(playerCombatSystem)
-        .addEventSystem(playerEventSystem)
-        .addSystem(enemyAISystem)
-        .addSystem(attackHitboxSystem);
-
-    initPlayer(mScene);
-    for (i32 i = 0; i < 5; i++)
-        spawnEnemy(mScene, EnemyType::undeadMelee, {Random::rangef(300.f, 600.f), Random::rangef(10.f, 300.f)});
+    if (state == game) {
+        mState = newPtr<GameState>(mScene);
+    }
+    else if (state == editor) {
+        mState = newPtr<MapEditorState>(mScene, "../assets/map/test_set.yml", "../assets/textures/tilemap.png");
+    }
 }
 
 void Game::run() {
@@ -72,12 +59,10 @@ void Game::run() {
             mScene.onEvent(event);
         }
 
-        mScene.update();
+        mState->update();
         ImGui::SFML::Update(*mWindow, Time::sfDt());
 
-        ImGui::Begin("Test");
-        ImGui::Text("Sigma");
-        ImGui::End();
+        mState->renderUI();
 
         mWindow->clear(sf::Color(100, 100, 100, 255));
         mRenderer->render();

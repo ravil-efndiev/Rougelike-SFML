@@ -3,6 +3,7 @@
 
 class Entity {
 public:
+    Entity() = default;
     explicit Entity(EntityId id, Scene* scene) : mId(id), mScene(scene) {}
 
     EntityId getId() const { return mId; }

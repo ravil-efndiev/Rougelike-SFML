@@ -8,6 +8,7 @@
 #include <Components/Animator.hpp>
 #include <Time.hpp>
 #include <Game.hpp>
+#include <Utils.hpp>
 
 struct DirectionData {
     std::string name;
@@ -187,9 +188,7 @@ MoveDirection playerMouseDir(const sf::Vector2f& playerPos, const sf::Vector2f& 
 void playerEventSystem(const sf::Event& event, const std::vector<Entity>& entities) {
     if (event.type != sf::Event::MouseButtonPressed) return;
 
-    Game* game = Game::getInstance();
-    sf::Vector2i mousePixel = sf::Mouse::getPosition(game->window());
-    sf::Vector2f mousePos = game->window().mapPixelToCoords(mousePixel);
+    sf::Vector2f mousePos = getMousePosition();
 
     for (const auto& entity : entities) {
         if (!entity.has<Player>() 
