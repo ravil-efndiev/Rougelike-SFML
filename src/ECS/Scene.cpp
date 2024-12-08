@@ -65,12 +65,12 @@ void Scene::onEvent(const sf::Event& event) {
 void Scene::onMainLoopEnd() {
     for (const auto& entity : mRemovals){
         mEntities.erase(std::remove(mEntities.begin(), mEntities.end(), entity), mEntities.end());
-        mRegistry.clear(entity.getId());
+        mRegistry.clear(entity.id());
     }
     mRemovals.clear();
 }
 
-std::vector<Entity> Scene::getEntities() const {
+std::vector<Entity> Scene::entities() const {
     return mEntities;
 }
 
@@ -80,10 +80,8 @@ Entity findEntityByName(const std::vector<Entity> &entities, const std::string& 
             return entity.get<Tag>()->name == name;
         }
     );
-    if (it != entities.end()) {
-        return *it;
-    }
-    throw std::out_of_range("no entity with name `" + name + "` found");
+    R_ASSERT(it != entities.end(), "no entity with name `" + name + "` found");
+    return *it;
 }
 
 std::vector<Entity> findEntitiesByName(const std::vector<Entity> &entities, const std::string &name) {

@@ -41,12 +41,14 @@ void MapEditorState::loadTileset() {
 
     for (const auto& tileEntry : tiles) {
         std::string tileName = tileEntry.first.as<std::string>();
-        YAML::Node texCoords = tileEntry.second;
+        YAML::Node tileData = tileEntry.second;
 
-        R_ASSERT((texCoords.IsSequence() && texCoords.size() == 2), "invalid tex coords data in tileset file")
-        R_ASSERT((mTileset.find(tileName) == mTileset.end()), "tile names must be unique in a set")
+        R_ASSERT(tileData.IsSequence() && tileData.size() == 3, "invalid tex coords data in tileset file")
+        R_ASSERT(mTileset.find(tileName) == mTileset.end(), "tile names must be unique in a set")
 
-        mTileset.emplace(tileName, sf::Vector2i(texCoords[0].as<i32>(), texCoords[1].as<i32>()));
+        bool hasCollision = tileData[2].as<bool>();
+
+        mTileset.emplace(tileName, SetTileData({tileData[0].as<i32>(), tileData[1].as<i32>()}, hasCollision));
         mTilesetInsertions.push_back(tileName);
     }
 }
@@ -88,8 +90,8 @@ void MapEditorState::update() {
         sf::Vector2i mousePos = mTilemap->simplifyPosition(getMousePosition());
             
         if (!mSelectedTile.empty()) {
-            auto coords = mTileset.at(mSelectedTile);
-            mTilemap->setTile(mousePos, coordsToIntRect(coords), mSelectedTile);
+            auto tileData = mTileset.at(mSelectedTile);
+            mTilemap->setTile(mousePos, coordsToIntRect(tileData.subTexCoords), mSelectedTile, tileData.hasCollision);
         }
     }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
@@ -120,7 +122,7 @@ void MapEditorState::renderUI() {
 
     for (const auto& tileName : mTilesetInsertions) {
         sf::Sprite buttonSprite (*mTilemap->texture);
-        buttonSprite.setTextureRect(coordsToIntRect(mTileset.at(tileName)));
+        buttonSprite.setTextureRect(coordsToIntRect(mTileset.at(tileName).subTexCoords));
         if (ImGui::ImageButton(tileName.c_str(), buttonSprite, {imageSize, imageSize})) {
             mSelectedTile = tileName;
         }

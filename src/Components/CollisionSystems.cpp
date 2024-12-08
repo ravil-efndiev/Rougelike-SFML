@@ -11,12 +11,12 @@ void colliderPositionSystem(const std::vector<Entity>& entities) {
 
         if (entity.has<Sprite>()) {
             auto* sprite = entity.get<Sprite>();
-            coll->bounds.left = sprite->centerPosition(tf->position).x - coll->bounds.width / 2.f;
-            coll->bounds.top = sprite->centerPosition(tf->position).y - coll->bounds.height / 2.f;
+            coll->bounds.left = sprite->centerPosition(tf->position).x - coll->bounds.width / 2.f + coll->offset.x;
+            coll->bounds.top = sprite->centerPosition(tf->position).y - coll->bounds.height / 2.f + coll->offset.y;
         }
         else {
-            coll->bounds.left = tf->position.x;
-            coll->bounds.top = tf->position.y;
+            coll->bounds.left = tf->position.x + coll->offset.x;
+            coll->bounds.top = tf->position.y + coll->offset.y;
         }
     }
 }

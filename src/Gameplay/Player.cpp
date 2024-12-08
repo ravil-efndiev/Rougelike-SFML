@@ -1,6 +1,8 @@
 #include "Player.hpp"
 #include "Health.hpp"
 #include "AttackHitbox.hpp"
+#include "ColliderList.hpp"
+#include "Tilemap.hpp"
 #include <Components/Transform.hpp>
 #include <Components/Sprite.hpp>
 #include <Components/Collider.hpp>
@@ -29,7 +31,7 @@ void initPlayer(Scene& scene) {
 
     player.add<Player>();
     atkHitbox.add<AttackHitbox>(40.f, 70.f, 24);
-    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
+    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->active = false;
 
     Ref<sf::Texture> tex = newRef<sf::Texture>();
     tex->loadFromFile("../assets/textures/player_sheet.png");
@@ -37,8 +39,11 @@ void initPlayer(Scene& scene) {
 
     auto* tf = player.get<Transform>();
     tf->scale = { 3.f, 3.f };
+    tf->position = { 300.f, 400.f };
 
-    player.add<Collider>(sf::Vector2f(30, 60))->debugRender = false;
+    auto* collList = player.add<ColliderList>(true);
+    collList->colliders.push_back(Collider(sf::Vector2f(30, 60), {0.f, 0.f}, false));
+    collList->colliders.push_back(Collider(sf::Vector2f(30, 30), {0.f, 25.f}, false));
     player.add<Health>([](i32 newHealth) {
         if (newHealth <= 0) {
             std::cout << "dead\n";
@@ -99,13 +104,8 @@ void move(MoveDirection dir, Player* player, Animator* animator, sf::Vector2f& m
 
 void playerMovementSystem(const std::vector<Entity>& entities) {
     for (const auto& entity : entities) {
-        if (!entity.has<Player>() 
-            || !entity.has<Transform>() 
-            || !entity.has<Sprite>() 
-            || !entity.has<Animator>()) continue;
+        if (!entity.has<Player>() || !entity.has<Animator>()) continue;
 
-        auto* tf = entity.get<Transform>();
-        auto* sprite = entity.get<Sprite>();
         auto* player = entity.get<Player>();
         auto* animator = entity.get<Animator>();
 
@@ -129,7 +129,7 @@ void playerMovementSystem(const std::vector<Entity>& entities) {
         }
 
         normalize(movement);
-        tf->position += movement * player->moveSpeed * Time::dt();
+        player->nextPositionDelta = movement * player->moveSpeed * Time::dt();
     }
 }
 
@@ -141,7 +141,7 @@ void playerCameraSystem(const std::vector<Entity>& entities) {
 
         auto* tf = entity.get<Transform>();
         auto* sprite = entity.get<Sprite>();
-        
+
         Application* app = Application::getInstance();
         app->camera().setCenter(sprite->centerPosition(tf->position));
         app->window().setView(app->camera());
@@ -232,4 +232,42 @@ void Player::resetAttack() {
     bufferedAttack = false;
     combo = false;
     comboTimer = 0.f;
+}
+
+void playerCollisionSystem(const std::vector<Entity>& entities) {
+    for (const auto& entity : entities) {
+        if (!entity.has<Tilemap>()) continue;
+        
+        auto* tlmColliders = entity.get<ColliderList>();
+
+        Entity player = findEntityByName(entities, "player");
+        auto* playerCmp = player.get<Player>();
+        auto* playerTf = player.get<Transform>();
+        Collider playerColl = player.get<ColliderList>()->colliders[PLAYER_PHYSICS_COLLIDER];
+
+        playerColl.bounds.left += playerCmp->nextPositionDelta.x;
+        bool collisionX = false;
+        for (const Collider& coll : tlmColliders->colliders) {
+            if (coll.intercepts(playerColl)) {
+                collisionX = true;
+            }
+        }       
+        if (!collisionX) {
+            playerTf->position.x += playerCmp->nextPositionDelta.x;
+        }
+        else {
+            playerColl.bounds.left -= playerCmp->nextPositionDelta.x;
+        }
+
+        bool collisionY = false;
+        playerColl.bounds.top += playerCmp->nextPositionDelta.y;
+        for (const Collider& coll : tlmColliders->colliders) {
+            if (coll.intercepts(playerColl)) {
+                collisionY = true;
+            }
+        }       
+        if (!collisionY) {
+            playerTf->position.y += playerCmp->nextPositionDelta.y;
+        }
+    }
 }

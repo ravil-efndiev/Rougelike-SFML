@@ -1,12 +1,16 @@
 #include "Tilemap.hpp"
+#include "ColliderList.hpp"
 #include <yaml-cpp/yaml.h>
 
 Tile::Tile(
     const Ref<sf::Texture>& tex,
     const sf::Vector2i& position,
     const sf::IntRect& subTexture,
-    const std::string& name
-) : mSprite(*tex), mPosition(position), mName(name) {
+    const std::string& name,
+    bool hasCollision
+) : mSprite(*tex), mPosition(position),
+    mName(name), mCollision(hasCollision) 
+{
     mSprite.setTextureRect(subTexture);
     mSprite.setScale({ 3.f, 3.f });
 }
@@ -26,26 +30,25 @@ sf::Vector2f Tile::realPosition() const {
     };
 }
 
-std::string Tile::name() const {
-    return mName;
-}
-
-sf::Sprite& Tile::sprite() {
-    return mSprite;
-}
+std::string Tile::name() const { return mName; }
+bool Tile::hasCollision() const { return mCollision; }
+sf::Sprite& Tile::sprite() { return mSprite; }
 
 Tilemap::Tilemap(const Ref<sf::Texture>& tex, u32 tileSize) : texture(tex), tileSize(tileSize) {}
 
-void Tilemap::setTile(const sf::Vector2i& pos, const sf::IntRect& tileSubTexture, const std::string& name) {
+void Tilemap::setTile(
+    const sf::Vector2i& pos, const sf::IntRect& tileSubTexture,
+    const std::string& name, bool hasCollision
+) {
     auto it = std::find_if(tiles.begin(), tiles.end(), [pos](const Tile& tile) {
         return tile.position() == pos;
     });
 
     if (it != tiles.end()) {
-        *it = Tile(texture, pos, tileSubTexture, name);
+        *it = Tile(texture, pos, tileSubTexture, name, hasCollision);
     }
     else {
-        tiles.push_back(Tile(texture, pos, tileSubTexture, name));
+        tiles.push_back(Tile(texture, pos, tileSubTexture, name, hasCollision));
     }
 }
 
@@ -86,6 +89,7 @@ void Tilemap::saveToFile(const std::string& path) {
         emitter << YAML::Key << "texY" << YAML::Value << subtex.top;
         emitter << YAML::Key << "width" << YAML::Value << subtex.width;
         emitter << YAML::Key << "height" << YAML::Value << subtex.height;
+        emitter << YAML::Key << "collision" << YAML::Value << tile.hasCollision();
         emitter << YAML::EndMap;
     }
 
@@ -102,9 +106,10 @@ void Tilemap::loadFromFile(const std::string& path) {
 
     for (const auto& tileData : tilesSeq) {
         R_ASSERT(
-            (tileData["name"] && tileData["x"] && tileData["y"] && 
+            tileData["name"] && tileData["x"] && tileData["y"] && 
             tileData["texX"] && tileData["texY"] &&
-            tileData["width"] && tileData["height"]),
+            tileData["width"] && tileData["height"] && 
+            tileData["collision"],
             "data missing from tile entry"
         )
 
@@ -114,6 +119,23 @@ void Tilemap::loadFromFile(const std::string& path) {
         );
 
         sf::Vector2i pos (tileData["x"].as<i32>(), tileData["y"].as<i32>());
-        setTile(pos, subTexture, tileData["name"].as<std::string>());
+        setTile(pos, subTexture, tileData["name"].as<std::string>(), tileData["collision"].as<bool>());
+    }
+}
+
+void createTilemap(Scene& scene) {
+    Entity mapEntt = scene.newEntity();
+    Ref<sf::Texture> tex = newRef<sf::Texture>();
+    tex->loadFromFile("../assets/textures/tilemap.png");
+
+    auto* tlm = mapEntt.add<Tilemap>(tex, 24);
+    tlm->loadFromFile("../assets/map/test_map.yml");
+
+    auto* collList = mapEntt.add<ColliderList>(false);
+    for (Tile& tile : tlm->tiles) {
+        if (!tile.hasCollision()) continue;
+
+        f32 collSize = tile.sprite().getGlobalBounds().width;
+        collList->colliders.push_back(Collider({collSize, collSize}, tile.realPosition(), false));
     }
 }

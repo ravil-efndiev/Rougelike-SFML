@@ -6,6 +6,7 @@
 #include "Components/CollisionSystems.hpp"
 #include "Gameplay/Player.hpp"
 #include "Gameplay/AttackHitbox.hpp"
+#include "Gameplay/ColliderList.hpp"
 #include "Gameplay/Enemy.hpp"
 #include "Gameplay/Tilemap.hpp"
 
@@ -19,15 +20,13 @@ GameState::GameState(Scene& scene) : mScene(scene) {
         .addFixedSystem(playerCameraSystem)
         .addSystem(playerCombatSystem)
         .addEventSystem(playerEventSystem)
+        .addSystem(playerCollisionSystem)
         .addSystem(enemyAISystem)
-        
-        .addSystem(attackHitboxSystem);
 
-    Entity tlm = mScene.newEntity();
-    Ref<sf::Texture> tex = newRef<sf::Texture>();
-    tex->loadFromFile("../assets/textures/tilemap.png");
-    tlm.add<Tilemap>(tex, 24)->loadFromFile("../assets/map/test_map.yml");
+        .addSystem(attackHitboxSystem)
+        .addSystem(colliderListPositionSystem);
 
+    createTilemap(mScene);
     initPlayer(mScene);
     for (i32 i = 0; i < 5; i++)
         spawnEnemy(mScene, EnemyType::undeadMelee, {Random::rangef(300.f, 600.f), Random::rangef(10.f, 300.f)});

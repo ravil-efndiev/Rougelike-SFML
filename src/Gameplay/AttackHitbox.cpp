@@ -1,5 +1,6 @@
 #include "AttackHitbox.hpp"
 #include "Health.hpp"
+#include "ColliderList.hpp"
 
 void attackHitboxSystem(const std::vector<Entity>& entities) {
     for (const auto& entity : entities) {
@@ -13,18 +14,22 @@ void attackHitboxSystem(const std::vector<Entity>& entities) {
             std::vector<Entity> enemies = findEntitiesByName(entities, "enemy");
             for (const auto& enemy : enemies) {
                 auto* enemyColl = enemy.get<Collider>();
-                if (coll->intercepts(*enemyColl) && !hitbox->entityTookDamage(enemy.getId())) {
+
+                if (coll->intercepts(*enemyColl) && !hitbox->entityTookDamage(enemy.id())) {
                     enemy.get<Health>()->damage(hitbox->damage);
-                    hitbox->entitiesTookDamage.push_back(enemy.getId());
+                    hitbox->entitiesTookDamage.push_back(enemy.id());
                 }
             }
         }
         else if (hitbox->targets == AttackHitbox::player) {
             Entity player = findEntityByName(entities, "player");
-            auto* playerColl = player.get<Collider>();
-            if (coll->intercepts(*playerColl) && !hitbox->entityTookDamage(player.getId())) {
+            auto* collList = player.get<ColliderList>();
+            Collider playerDmgColl = collList->colliders[PLAYER_DAMAGE_COLLIDER];
+            
+            if (coll->intercepts(playerDmgColl) && !hitbox->entityTookDamage(player.id())) {
+                std::cout << "gotcha nigga\n";
                 player.get<Health>()->damage(hitbox->damage);
-                hitbox->entitiesTookDamage.push_back(player.getId());
+                hitbox->entitiesTookDamage.push_back(player.id());
             }
         }
     }

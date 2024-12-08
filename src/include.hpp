@@ -20,7 +20,7 @@
 
 #define R_DEV true
 
-#define R_ASSERT(condition, errMessage) if (!condition) { \
+#define R_ASSERT(condition, errMessage) if (!(condition)) { \
     std::cerr << errMessage << "\n"; \
     std::abort(); \
 }

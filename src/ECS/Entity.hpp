@@ -6,7 +6,7 @@ public:
     Entity() = default;
     explicit Entity(EntityId id, Scene* scene) : mId(id), mScene(scene) {}
 
-    EntityId getId() const { return mId; }
+    EntityId id() const { return mId; }
 
     bool operator==(const Entity& other) const { return mId == other.mId; }
     bool operator!=(const Entity& other) const { return mId != other.mId; }

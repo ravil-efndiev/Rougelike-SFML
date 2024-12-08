@@ -44,7 +44,7 @@ void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
     enemy->forgetRadius = 400.f;
 
     atkHitbox.add<AttackHitbox>(30.f, 60.f, 20)->targets = AttackHitbox::player;
-    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->debugRender = false;
+    atkHitbox.add<Collider>(sf::Vector2f(20.f, 20.f))->active = false;
 
     setMeleeAttackAnimations(newEnemy, atkHitbox, animator);
 }

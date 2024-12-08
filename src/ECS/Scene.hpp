@@ -21,7 +21,7 @@ public:
     void onEvent(const sf::Event& event);
     void onMainLoopEnd();
 
-    std::vector<Entity> getEntities() const;
+    std::vector<Entity> entities() const;
 
 private:
     std::vector<Entity> mEntities;
