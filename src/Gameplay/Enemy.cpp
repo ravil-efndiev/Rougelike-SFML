@@ -1,6 +1,8 @@
 #include "Enemy.hpp"
+#include <Application.hpp>
 #include "AttackHitbox.hpp"
 #include "Health.hpp"
+#include "BloodEffect.hpp"
 #include <Time.hpp>
 #include <Components/Sprite.hpp>
 #include <Components/Animator.hpp>
@@ -52,6 +54,7 @@ void spawnMeleeUndead(Entity newEnemy, Entity atkHitbox, Animator* animator) {
 void spawnEnemy(Scene& scene, EnemyType type, const sf::Vector2f& position) {
     Entity newEnemy = scene.newEntity("enemy");
     Entity atkHitbox = scene.newEntity();
+    Entity blood = initBloodEffect(scene);
 
     auto* animator = newEnemy.add<Animator>();
 
@@ -64,17 +67,36 @@ void spawnEnemy(Scene& scene, EnemyType type, const sf::Vector2f& position) {
     }
 
     newEnemy.add<Collider>(sf::Vector2f(30, 60));
-    newEnemy.add<Health>([newEnemy, &scene](i32 newHealth) mutable {
+    newEnemy.add<Health>([newEnemy, atkHitbox, &scene, blood](i32 newHealth, i32 newPoise) mutable {
+        blood.get<BloodEffect>()->active = true;
+
+        auto* bloodTf = blood.get<Transform>();
+        auto* bloodSprite = blood.get<Sprite>();
+
+        auto* enemy = newEnemy.get<Enemy>();
+        auto* enemyTf = newEnemy.get<Transform>();
+        auto* enemySprite = newEnemy.get<Sprite>();
+        bloodTf->position = enemyTf->position;
+
         if (newHealth <= 0) {
-            scene.removeEntity(newEnemy);
+            enemy->dying = true;
+            enemy->asociatedEntities.push_back(blood);
+            enemy->asociatedEntities.push_back(atkHitbox);
         }
-    }, 50);
+        if (newPoise <= 0) {
+            newEnemy.get<Enemy>()->staggered = true;
+        }
+    }, 50, 20);
 
-    animator->addAnimation("idle_right",   { 50, 0, 0, 1, 48 });
-    animator->addAnimation("move_right",   { 15, 0, 1, 3, 48 });
+    animator->addAnimation("idle_right", { 50, 0, 0, 1, 48 });
+    animator->addAnimation("move_right", { 15, 0, 1, 3, 48 });
+    animator->addAnimation("stan_right", { 7, 0, 6, 2, 48 });
+    animator->addAnimation("die_right",  { 15, 0, 8, 2, 48 });
 
-    animator->addAnimation("idle_left",   { 50, 0, 3, 1, 48 });
-    animator->addAnimation("move_left",   { 15, 0, 4, 3, 48 });
+    animator->addAnimation("idle_left", { 50, 0, 3, 1, 48 });
+    animator->addAnimation("move_left", { 15, 0, 4, 3, 48 });
+    animator->addAnimation("stan_left", { 7, 0, 7, 2, 48 });
+    animator->addAnimation("die_left",  { 15, 0, 9, 2, 48 });
 
     auto* tf = newEnemy.get<Transform>();
     tf->position = position;
@@ -140,10 +162,32 @@ void enemyAISystem(const std::vector<Entity>& entities) {
         auto* tf = entity.get<Transform>();
         auto* enemy = entity.get<Enemy>();
         auto* animator = entity.get<Animator>();
+        auto* health = entity.get<Health>();
 
         Entity player = findEntityByName(entities, "player");
         auto* playerTf = player.get<Transform>();
         
+        if (enemy->dying) {
+            Scene& scene = Application::getInstance()->scene();
+            animator->play("die_" + directionNames.at(enemy->direction));
+            if (animator->currentAnimation->isFinished()) {
+                for (Entity& asEntt : enemy->asociatedEntities) {
+                    scene.removeEntity(asEntt);
+                }
+                scene.removeEntity(entity);
+            }
+            continue;
+        }
+
+        if (enemy->staggered) {
+            animator->play("stan_" + directionNames.at(enemy->direction));
+            if (animator->currentAnimation->isFinished()) {
+                enemy->staggered = false;
+                health->poise = health->maxPoise;
+            }
+            continue;
+        }
+
         switch (enemy->type) {
         case EnemyType::undeadMelee:
             meleeEnemyAi(enemy, animator, tf, playerTf);

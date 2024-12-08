@@ -93,3 +93,7 @@ sf::RenderWindow& Application::window() {
 sf::View& Application::camera() {
     return *mView;
 }
+
+Scene& Application::scene() {
+    return mScene;
+}

@@ -44,11 +44,11 @@ void initPlayer(Scene& scene) {
     auto* collList = player.add<ColliderList>(true);
     collList->colliders.push_back(Collider(sf::Vector2f(30, 60), {0.f, 0.f}, false));
     collList->colliders.push_back(Collider(sf::Vector2f(30, 30), {0.f, 25.f}, false));
-    player.add<Health>([](i32 newHealth) {
+    player.add<Health>([](i32 newHealth, i32 newPoise) {
         if (newHealth <= 0) {
             std::cout << "dead\n";
         }
-    }, 100);
+    }, 100, 50);
 
     auto* animator = player.add<Animator>();
     animator->addAnimation("idle_down",  { 30, 0, 0, 3, 48 });

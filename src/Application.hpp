@@ -20,6 +20,7 @@ public:
 
     sf::RenderWindow& window();
     sf::View& camera();
+    Scene& scene();
 
 private:
     static Application* sInstance;

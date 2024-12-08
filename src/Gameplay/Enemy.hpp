@@ -21,6 +21,10 @@ struct Enemy {
     f32 seeRadius {}, forgetRadius {};
     f32 moveSpeed {};
     bool canAttack = true;
+    bool staggered = false;
+    bool dying = false;
+
+    std::vector<Entity> asociatedEntities;
 };
 
 void spawnEnemy(Scene& scene, EnemyType type, const sf::Vector2f& position);

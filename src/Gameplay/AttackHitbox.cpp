@@ -16,7 +16,7 @@ void attackHitboxSystem(const std::vector<Entity>& entities) {
                 auto* enemyColl = enemy.get<Collider>();
 
                 if (coll->intercepts(*enemyColl) && !hitbox->entityTookDamage(enemy.id())) {
-                    enemy.get<Health>()->damage(hitbox->damage);
+                    enemy.get<Health>()->damage(hitbox->damage, 20);
                     hitbox->entitiesTookDamage.push_back(enemy.id());
                 }
             }
@@ -27,8 +27,7 @@ void attackHitboxSystem(const std::vector<Entity>& entities) {
             Collider playerDmgColl = collList->colliders[PLAYER_DAMAGE_COLLIDER];
             
             if (coll->intercepts(playerDmgColl) && !hitbox->entityTookDamage(player.id())) {
-                std::cout << "gotcha nigga\n";
-                player.get<Health>()->damage(hitbox->damage);
+                player.get<Health>()->damage(hitbox->damage, 20);
                 hitbox->entitiesTookDamage.push_back(player.id());
             }
         }

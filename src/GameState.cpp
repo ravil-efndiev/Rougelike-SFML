@@ -7,14 +7,16 @@
 #include "Gameplay/Player.hpp"
 #include "Gameplay/AttackHitbox.hpp"
 #include "Gameplay/ColliderList.hpp"
+#include "Gameplay/Health.hpp"
 #include "Gameplay/Enemy.hpp"
+#include "Gameplay/BloodEffect.hpp"
 #include "Gameplay/Tilemap.hpp"
 
 GameState::GameState(Scene& scene) : mScene(scene) {
     mScene
         .addSystem(spriteTransformSystem)
-        .addSystem(spriteAnimationSystem)
         .addSystem(colliderPositionSystem)
+        .addSystem(spriteAnimationSystem)
 
         .addSystem(playerMovementSystem)
         .addFixedSystem(playerCameraSystem)
@@ -24,7 +26,9 @@ GameState::GameState(Scene& scene) : mScene(scene) {
         .addSystem(enemyAISystem)
 
         .addSystem(attackHitboxSystem)
-        .addSystem(colliderListPositionSystem);
+        .addSystem(colliderListPositionSystem)
+        .addSystem(bloodEffectSystem)
+        .addSystem(poiseRegenSystem);
 
     createTilemap(mScene);
     initPlayer(mScene);

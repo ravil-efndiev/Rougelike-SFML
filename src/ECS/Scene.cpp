@@ -84,6 +84,16 @@ Entity findEntityByName(const std::vector<Entity> &entities, const std::string& 
     return *it;
 }
 
+Entity findEntityById(const std::vector<Entity>& entities, EntityId id) {
+    auto it = std::find_if(entities.begin(), entities.end(), 
+        [id](Entity entity) {
+            return entity.id() == id;
+        }
+    );
+    R_ASSERT(it != entities.end(), "no entity with id `" + std::to_string(id) + "` found");
+    return *it;
+}
+
 std::vector<Entity> findEntitiesByName(const std::vector<Entity> &entities, const std::string &name) {
     std::vector<Entity> filtered;
     std::copy_if(entities.begin(), entities.end(), std::back_inserter(filtered),

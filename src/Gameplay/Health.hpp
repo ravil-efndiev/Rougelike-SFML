@@ -1,16 +1,18 @@
 #pragma once
-#include <include.hpp>
+#include <Entity.hpp>
 
 struct Health {
-    Health(const std::function<void(i32)>& onTakeDamage, i32 health) 
-        : onTakeDamage(onTakeDamage), health(health) {}
+    Health(const std::function<void(i32, i32)>& onTakeDamage, i32 health, i32 poise) 
+        : onTakeDamage(onTakeDamage), health(health), poise(poise), maxPoise(poise) {}
 
     i32 health;
-    std::function<void(i32)> onTakeDamage;
+    i32 poise, maxPoise;
+    std::function<void(i32, i32)> onTakeDamage;
 
-    void damage(i32 damage) {
-        health -= damage;
-        onTakeDamage(health);
-    }
+    f32 poiseRegen = 100.f;
+    f32 poiseRegenTimer {};
+
+    void damage(i32 damage, i32 poiseDamage);
 };
 
+void poiseRegenSystem(const std::vector<Entity>& entities);

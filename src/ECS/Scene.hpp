@@ -34,5 +34,6 @@ private:
     static i32 sEntityCounter;
 };
 
+Entity findEntityById(const std::vector<Entity>& entities, EntityId id);
 Entity findEntityByName(const std::vector<Entity>& entities, const std::string& name);
 std::vector<Entity> findEntitiesByName(const std::vector<Entity>& entities, const std::string& name);
