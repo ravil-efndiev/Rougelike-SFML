@@ -1,5 +1,6 @@
 tiles:
   - name: top
+    layer: layout
     x: 4
     y: 1
     texX: 0
@@ -8,6 +9,7 @@ tiles:
     height: 24
     collision: false
   - name: top
+    layer: layout
     x: 5
     y: 1
     texX: 0
@@ -16,6 +18,7 @@ tiles:
     height: 24
     collision: false
   - name: top
+    layer: layout
     x: 6
     y: 1
     texX: 0
@@ -24,6 +27,7 @@ tiles:
     height: 24
     collision: false
   - name: top
+    layer: layout
     x: 7
     y: 1
     texX: 0
@@ -32,6 +36,7 @@ tiles:
     height: 24
     collision: false
   - name: wallLight0
+    layer: layout
     x: 4
     y: 2
     texX: 72
@@ -40,6 +45,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight1
+    layer: layout
     x: 5
     y: 2
     texX: 96
@@ -48,6 +54,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight0
+    layer: layout
     x: 6
     y: 2
     texX: 72
@@ -56,6 +63,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight2
+    layer: layout
     x: 7
     y: 2
     texX: 120
@@ -64,6 +72,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 6
     y: 3
     texX: 0
@@ -72,6 +81,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 4
     y: 3
     texX: 0
@@ -80,6 +90,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark1
+    layer: layout
     x: 5
     y: 3
     texX: 24
@@ -88,6 +99,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark1
+    layer: layout
     x: 7
     y: 3
     texX: 24
@@ -96,6 +108,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark2
+    layer: layout
     x: 5
     y: 4
     texX: 48
@@ -104,6 +117,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 4
     y: 4
     texX: 0
@@ -112,6 +126,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 6
     y: 4
     texX: 0
@@ -120,6 +135,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark1
+    layer: layout
     x: 7
     y: 4
     texX: 24
@@ -128,6 +144,7 @@ tiles:
     height: 24
     collision: true
   - name: floor0
+    layer: layout
     x: 4
     y: 5
     texX: 0
@@ -136,6 +153,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 5
     y: 5
     texX: 48
@@ -144,6 +162,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 6
     y: 5
     texX: 0
@@ -152,6 +171,7 @@ tiles:
     height: 24
     collision: false
   - name: floor3
+    layer: layout
     x: 7
     y: 5
     texX: 72
@@ -160,6 +180,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 7
     y: 6
     texX: 0
@@ -168,6 +189,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 6
     y: 6
     texX: 48
@@ -176,6 +198,7 @@ tiles:
     height: 24
     collision: false
   - name: floor1
+    layer: layout
     x: 6
     y: 7
     texX: 24
@@ -184,6 +207,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 5
     y: 7
     texX: 0
@@ -192,6 +216,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 5
     y: 6
     texX: 48
@@ -200,6 +225,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 4
     y: 6
     texX: 0
@@ -208,6 +234,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 7
     y: 7
     texX: 48
@@ -216,6 +243,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 4
     y: 7
     texX: 48
@@ -224,6 +252,7 @@ tiles:
     height: 24
     collision: false
   - name: leftTop
+    layer: layout
     x: 3
     y: 2
     texX: 72
@@ -232,6 +261,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight1
+    layer: layout
     x: 3
     y: 3
     texX: 96
@@ -240,6 +270,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight1
+    layer: layout
     x: 3
     y: 5
     texX: 96
@@ -248,6 +279,7 @@ tiles:
     height: 24
     collision: true
   - name: leftCorner
+    layer: layout
     x: 3
     y: 1
     texX: 216
@@ -256,6 +288,7 @@ tiles:
     height: 24
     collision: false
   - name: right
+    layer: layout
     x: 8
     y: 2
     texX: 96
@@ -264,6 +297,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 8
     y: 3
     texX: 96
@@ -272,6 +306,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 8
     y: 4
     texX: 96
@@ -280,6 +315,7 @@ tiles:
     height: 24
     collision: true
   - name: rightTop
+    layer: layout
     x: 8
     y: 5
     texX: 24
@@ -288,6 +324,7 @@ tiles:
     height: 24
     collision: true
   - name: rightCorner
+    layer: layout
     x: 8
     y: 1
     texX: 168
@@ -296,6 +333,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 6
     y: 8
     texX: 0
@@ -304,6 +342,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 7
     y: 8
     texX: 0
@@ -312,6 +351,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 7
     y: 9
     texX: 0
@@ -320,6 +360,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 6
     y: 9
     texX: 48
@@ -328,6 +369,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 8
     y: 9
     texX: 48
@@ -336,6 +378,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 9
     y: 9
     texX: 48
@@ -344,6 +387,7 @@ tiles:
     height: 24
     collision: false
   - name: floor1
+    layer: layout
     x: 10
     y: 9
     texX: 24
@@ -352,6 +396,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 11
     y: 9
     texX: 0
@@ -360,6 +405,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 11
     y: 10
     texX: 48
@@ -368,6 +414,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 10
     y: 10
     texX: 48
@@ -376,6 +423,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 9
     y: 10
     texX: 0
@@ -384,6 +432,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 8
     y: 10
     texX: 48
@@ -392,6 +441,7 @@ tiles:
     height: 24
     collision: false
   - name: floor3
+    layer: layout
     x: 7
     y: 10
     texX: 72
@@ -400,6 +450,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 6
     y: 10
     texX: 0
@@ -408,6 +459,7 @@ tiles:
     height: 24
     collision: false
   - name: wallLight0
+    layer: layout
     x: 8
     y: 6
     texX: 72
@@ -416,6 +468,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight1
+    layer: layout
     x: 9
     y: 6
     texX: 96
@@ -424,6 +477,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight0
+    layer: layout
     x: 10
     y: 6
     texX: 72
@@ -432,6 +486,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight0
+    layer: layout
     x: 11
     y: 6
     texX: 72
@@ -440,6 +495,7 @@ tiles:
     height: 24
     collision: true
   - name: top
+    layer: layout
     x: 9
     y: 5
     texX: 0
@@ -448,6 +504,7 @@ tiles:
     height: 24
     collision: false
   - name: top
+    layer: layout
     x: 10
     y: 5
     texX: 0
@@ -456,6 +513,7 @@ tiles:
     height: 24
     collision: false
   - name: top
+    layer: layout
     x: 11
     y: 5
     texX: 0
@@ -464,6 +522,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 4
     y: 8
     texX: 0
@@ -472,6 +531,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 5
     y: 8
     texX: 0
@@ -480,6 +540,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 5
     y: 9
     texX: 0
@@ -488,6 +549,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 4
     y: 9
     texX: 48
@@ -496,6 +558,7 @@ tiles:
     height: 24
     collision: false
   - name: wallDark0
+    layer: layout
     x: 8
     y: 7
     texX: 0
@@ -504,6 +567,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 9
     y: 7
     texX: 0
@@ -512,6 +576,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark2
+    layer: layout
     x: 10
     y: 7
     texX: 48
@@ -520,6 +585,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 10
     y: 8
     texX: 0
@@ -528,6 +594,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 11
     y: 7
     texX: 0
@@ -536,6 +603,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark1
+    layer: layout
     x: 11
     y: 8
     texX: 24
@@ -544,6 +612,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark0
+    layer: layout
     x: 9
     y: 8
     texX: 0
@@ -552,6 +621,7 @@ tiles:
     height: 24
     collision: true
   - name: wallDark1
+    layer: layout
     x: 8
     y: 8
     texX: 24
@@ -560,6 +630,7 @@ tiles:
     height: 24
     collision: true
   - name: left
+    layer: layout
     x: 3
     y: 10
     texX: 144
@@ -568,6 +639,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 12
     y: 6
     texX: 96
@@ -576,6 +648,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 12
     y: 7
     texX: 96
@@ -584,6 +657,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 12
     y: 8
     texX: 96
@@ -592,6 +666,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 12
     y: 9
     texX: 96
@@ -600,6 +675,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 12
     y: 10
     texX: 96
@@ -608,6 +684,7 @@ tiles:
     height: 24
     collision: true
   - name: rightCorner
+    layer: layout
     x: 12
     y: 5
     texX: 168
@@ -616,6 +693,7 @@ tiles:
     height: 24
     collision: false
   - name: columnTop
+    layer: layout
     x: 4
     y: 11
     texX: 240
@@ -624,6 +702,7 @@ tiles:
     height: 24
     collision: true
   - name: columnTop
+    layer: layout
     x: 5
     y: 11
     texX: 240
@@ -632,6 +711,7 @@ tiles:
     height: 24
     collision: true
   - name: columnTop
+    layer: layout
     x: 6
     y: 11
     texX: 240
@@ -640,6 +720,7 @@ tiles:
     height: 24
     collision: true
   - name: columnTop
+    layer: layout
     x: 7
     y: 11
     texX: 240
@@ -648,6 +729,7 @@ tiles:
     height: 24
     collision: true
   - name: columnTop
+    layer: layout
     x: 8
     y: 11
     texX: 240
@@ -656,6 +738,7 @@ tiles:
     height: 24
     collision: true
   - name: columnTop
+    layer: layout
     x: 9
     y: 11
     texX: 240
@@ -664,6 +747,7 @@ tiles:
     height: 24
     collision: true
   - name: columnTop
+    layer: layout
     x: 10
     y: 11
     texX: 240
@@ -672,6 +756,7 @@ tiles:
     height: 24
     collision: true
   - name: columnTop
+    layer: layout
     x: 11
     y: 11
     texX: 240
@@ -680,6 +765,7 @@ tiles:
     height: 24
     collision: true
   - name: floor2
+    layer: layout
     x: 5
     y: 10
     texX: 48
@@ -688,6 +774,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 4
     y: 10
     texX: 48
@@ -696,6 +783,7 @@ tiles:
     height: 24
     collision: false
   - name: left
+    layer: layout
     x: 3
     y: 11
     texX: 144
@@ -704,6 +792,7 @@ tiles:
     height: 24
     collision: true
   - name: right
+    layer: layout
     x: 12
     y: 11
     texX: 96
@@ -712,6 +801,7 @@ tiles:
     height: 24
     collision: true
   - name: floor1
+    layer: layout
     x: 3
     y: 9
     texX: 24
@@ -720,6 +810,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 3
     y: 8
     texX: 48
@@ -728,6 +819,7 @@ tiles:
     height: 24
     collision: false
   - name: floor0
+    layer: layout
     x: 3
     y: 7
     texX: 0
@@ -736,6 +828,7 @@ tiles:
     height: 24
     collision: false
   - name: floor2
+    layer: layout
     x: 3
     y: 6
     texX: 48
@@ -744,6 +837,7 @@ tiles:
     height: 24
     collision: false
   - name: left
+    layer: layout
     x: 2
     y: 6
     texX: 144
@@ -752,6 +846,7 @@ tiles:
     height: 24
     collision: true
   - name: left
+    layer: layout
     x: 2
     y: 7
     texX: 144
@@ -760,6 +855,7 @@ tiles:
     height: 24
     collision: true
   - name: left
+    layer: layout
     x: 2
     y: 8
     texX: 144
@@ -768,6 +864,7 @@ tiles:
     height: 24
     collision: true
   - name: left
+    layer: layout
     x: 2
     y: 9
     texX: 144
@@ -776,6 +873,7 @@ tiles:
     height: 24
     collision: true
   - name: left
+    layer: layout
     x: 2
     y: 5
     texX: 144
@@ -784,6 +882,7 @@ tiles:
     height: 24
     collision: true
   - name: left
+    layer: layout
     x: 2
     y: 4
     texX: 144
@@ -792,6 +891,7 @@ tiles:
     height: 24
     collision: true
   - name: wallLight1
+    layer: layout
     x: 3
     y: 4
     texX: 96
@@ -800,6 +900,7 @@ tiles:
     height: 24
     collision: true
   - name: left
+    layer: layout
     x: 2
     y: 3
     texX: 144
@@ -808,6 +909,7 @@ tiles:
     height: 24
     collision: true
   - name: leftCorner
+    layer: layout
     x: 2
     y: 2
     texX: 216
@@ -815,3 +917,12 @@ tiles:
     width: 24
     height: 24
     collision: false
+  - name: leftRight
+    layer: decorations
+    x: 5
+    y: 8
+    texX: 120
+    texY: 0
+    width: 24
+    height: 24
+    collision: true

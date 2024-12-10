@@ -78,12 +78,14 @@ void SceneRenderer::renderTilemaps(const std::vector<Entity>& entities) {
 
         auto* tlm = entity.get<Tilemap>();
 
-        for (auto& tile : tlm->tiles) {
-            if (!tile.initialized()) continue;
+        for (auto& layer : tlm->layers) {
+            for (auto& tile : layer.tiles) {
+                if (!tile.initialized()) continue;
 
-            auto& sprite = tile.sprite();
-            sprite.setPosition(tile.realPosition());
-            mWindow.draw(sprite);
+                auto& sprite = tile.sprite();
+                sprite.setPosition(tile.realPosition());
+                mWindow.draw(sprite);
+            }
         }
     }
 }

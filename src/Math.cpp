@@ -1,12 +1,14 @@
 #include "Math.hpp"
 
 void normalize(sf::Vector2f& vec) {
-    f32 magnitude = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
+    f32 magnitude = sqrt(vec.x * vec.x + vec.y * vec.y);
     if (magnitude != 0) vec /= magnitude;
 }
 
 f32 distance(const sf::Vector2f& a, const sf::Vector2f& b) {
-    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+    f32 dx = a.x - b.x;
+    f32 dy = a.y - b.y;
+    return sqrt(dx * dx + dy * dy);
 }
 
 void moveTowards(sf::Vector2f &current, const sf::Vector2f &target, f32 step) {

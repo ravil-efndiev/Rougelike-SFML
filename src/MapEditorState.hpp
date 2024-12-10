@@ -39,6 +39,7 @@ private:
     std::unordered_map<std::string, SetTileData> mTileset;
     std::vector<std::string> mTilesetInsertions;
     std::string mSelectedTile;
+    std::string mCurrentLayer;
 
     Entity mTilemapEntt;
     Tilemap* mTilemap;

@@ -53,7 +53,7 @@ void MapEditorState::loadTileset() {
     }
 }
 
-void MapEditorState::update() {
+void updateCamera() {
     Application* app = Application::getInstance();
     sf::Vector2f cameraMoveVec;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -71,18 +71,22 @@ void MapEditorState::update() {
     normalize(cameraMoveVec);
     app->camera().move(cameraMoveVec * 400.f * Time::dt());
     app->window().setView(app->camera());
+}
 
+void MapEditorState::update() {
     if (ImGui::GetIO().WantCaptureMouse) return;
+    updateCamera();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         sf::Vector2i mousePos = mTilemap->simplifyPosition(getMousePosition());
         
-        auto it = std::find_if(mTilemap->tiles.begin(), mTilemap->tiles.end(), 
+        auto layer = mTilemap->getLayer(mCurrentLayer);
+        auto it = std::find_if(layer.tiles.begin(), layer.tiles.end(), 
             [mousePos](const Tile& tile) {
                 return tile.position() == mousePos;
             }
         );
 
-        if (it != mTilemap->tiles.end()) {
+        if (it != layer.tiles.end()) {
             mSelectedTile = it->name();
         }
     }
@@ -91,13 +95,16 @@ void MapEditorState::update() {
             
         if (!mSelectedTile.empty()) {
             auto tileData = mTileset.at(mSelectedTile);
-            mTilemap->setTile(mousePos, coordsToIntRect(tileData.subTexCoords), mSelectedTile, tileData.hasCollision);
+            mTilemap->setTile(
+                mousePos, coordsToIntRect(tileData.subTexCoords),
+                mCurrentLayer, mSelectedTile, tileData.hasCollision
+            );
         }
     }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
         sf::Vector2i mousePos = mTilemap->simplifyPosition(getMousePosition());
 
-        mTilemap->removeTile(mousePos);
+        mTilemap->removeTile(mousePos, mCurrentLayer);
     }
 
     mScene.update();
@@ -110,6 +117,12 @@ void MapEditorState::onEvent(const sf::Event& event) {
         mTilemap->saveToFile(mTilemapPath);
     }
 }
+
+#define MAX_BUFFER_SIZE 256
+
+struct {
+    char layerName[MAX_BUFFER_SIZE];
+} UIData;
 
 void MapEditorState::renderUI() {
     ImGui::Begin("Tile Pallete");
@@ -129,6 +142,21 @@ void MapEditorState::renderUI() {
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
+    ImGui::End();
+
+    ImGui::Begin("Layers");
+    for (const auto& layer : mTilemap->layers) {
+        if (ImGui::Button(layer.name.c_str())) {
+            mCurrentLayer = layer.name;
+        }
+    }
+    ImGui::Separator();
+    ImGui::Text("Add new layer");
+    ImGui::InputText("name", UIData.layerName, MAX_BUFFER_SIZE);
+    if (ImGui::Button("+") && strlen(UIData.layerName) > 0) {
+        mTilemap->layers.push_back({{}, std::string(UIData.layerName)});
+        strncpy(UIData.layerName, "", MAX_BUFFER_SIZE);
+    }
     ImGui::End();
 }
 

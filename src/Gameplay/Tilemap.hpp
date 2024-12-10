@@ -30,15 +30,24 @@ private:
 struct Tilemap {
     Tilemap(const Ref<sf::Texture>& tex, u32 tileSize);
 
-    std::vector<Tile> tiles;
+    struct Layer {
+        std::vector<Tile> tiles;
+        std::string name;
+    };
+
+    std::vector<Layer> layers;
     Ref<sf::Texture> texture;
     u32 tileSize;
+    
+    Layer& getLayer(const std::string& name);
+    Layer* findLayer(const std::string& name);
+    std::vector<Tile> allCollisionTiles() const;
 
     void setTile(
         const sf::Vector2i& pos, const sf::IntRect& tileSubTexture,
-        const std::string& name, bool hasCollision
+        const std::string& layerName, const std::string& name, bool hasCollision
     );
-    void removeTile(const sf::Vector2i& pos);
+    void removeTile(const sf::Vector2i& pos, const std::string& layerName);
     sf::Vector2i simplifyPosition(const sf::Vector2f& pos);
     void saveToFile(const std::string& path);
     void loadFromFile(const std::string& path);

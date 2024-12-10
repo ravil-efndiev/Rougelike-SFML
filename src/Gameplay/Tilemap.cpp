@@ -36,19 +36,37 @@ sf::Sprite& Tile::sprite() { return mSprite; }
 
 Tilemap::Tilemap(const Ref<sf::Texture>& tex, u32 tileSize) : texture(tex), tileSize(tileSize) {}
 
+Tilemap::Layer* Tilemap::findLayer(const std::string& name) {
+    auto it = std::find_if(layers.begin(), layers.end(), [name](const Layer& layer) {
+        return layer.name == name;
+    });
+
+    if (it != layers.end()) {
+        return &(*it);
+    }
+    return nullptr;
+}
+
+Tilemap::Layer& Tilemap::getLayer(const std::string& name) {
+    Layer* layer = findLayer(name);
+    R_ASSERT(layer, "tilemap layer with name `" + name + "` not found");
+    return *layer;
+}
+
 void Tilemap::setTile(
     const sf::Vector2i& pos, const sf::IntRect& tileSubTexture,
-    const std::string& name, bool hasCollision
+    const std::string& layerName, const std::string& name, bool hasCollision
 ) {
-    auto it = std::find_if(tiles.begin(), tiles.end(), [pos](const Tile& tile) {
+    Layer& layer = getLayer(layerName);
+    auto it = std::find_if(layer.tiles.begin(), layer.tiles.end(), [pos](const Tile& tile) {
         return tile.position() == pos;
     });
 
-    if (it != tiles.end()) {
+    if (it != layer.tiles.end()) {
         *it = Tile(texture, pos, tileSubTexture, name, hasCollision);
     }
     else {
-        tiles.push_back(Tile(texture, pos, tileSubTexture, name, hasCollision));
+        layer.tiles.push_back(Tile(texture, pos, tileSubTexture, name, hasCollision));
     }
 }
 
@@ -64,11 +82,13 @@ sf::Vector2i Tilemap::simplifyPosition(const sf::Vector2f& pos) {
     };
 }
 
-void Tilemap::removeTile(const sf::Vector2i& pos) {
-    tiles.erase(
-        std::remove_if(tiles.begin(), tiles.end(), [pos](const Tile& tile) {
+void Tilemap::removeTile(const sf::Vector2i& pos, const std::string& layerName) {
+    Layer& layer = getLayer(layerName);
+    layer.tiles.erase(
+        std::remove_if(layer.tiles.begin(), layer.tiles.end(), [pos](const Tile& tile) {
             return tile.position() == pos;
-        }), tiles.end()
+        }), 
+        layer.tiles.end()
     );
 }
 
@@ -78,19 +98,22 @@ void Tilemap::saveToFile(const std::string& path) {
     emitter << YAML::Key << "tiles" << YAML::Value;
     emitter << YAML::BeginSeq;
 
-    for (Tile& tile : tiles) {
-        sf::IntRect subtex = tile.sprite().getTextureRect();
+    for (auto& layer : layers) {
+        for (auto& tile : layer.tiles) {
+            sf::IntRect subtex = tile.sprite().getTextureRect();
 
-        emitter << YAML::BeginMap;
-        emitter << YAML::Key << "name" << YAML::Value << tile.name();
-        emitter << YAML::Key << "x" << YAML::Value << tile.position().x;
-        emitter << YAML::Key << "y" << YAML::Value << tile.position().y;
-        emitter << YAML::Key << "texX" << YAML::Value << subtex.left;
-        emitter << YAML::Key << "texY" << YAML::Value << subtex.top;
-        emitter << YAML::Key << "width" << YAML::Value << subtex.width;
-        emitter << YAML::Key << "height" << YAML::Value << subtex.height;
-        emitter << YAML::Key << "collision" << YAML::Value << tile.hasCollision();
-        emitter << YAML::EndMap;
+            emitter << YAML::BeginMap;
+            emitter << YAML::Key << "name" << YAML::Value << tile.name();
+            emitter << YAML::Key << "layer" << YAML::Value << layer.name;
+            emitter << YAML::Key << "x" << YAML::Value << tile.position().x;
+            emitter << YAML::Key << "y" << YAML::Value << tile.position().y;
+            emitter << YAML::Key << "texX" << YAML::Value << subtex.left;
+            emitter << YAML::Key << "texY" << YAML::Value << subtex.top;
+            emitter << YAML::Key << "width" << YAML::Value << subtex.width;
+            emitter << YAML::Key << "height" << YAML::Value << subtex.height;
+            emitter << YAML::Key << "collision" << YAML::Value << tile.hasCollision();
+            emitter << YAML::EndMap;
+        }
     }
 
     emitter << YAML::EndSeq << YAML::EndMap;
@@ -109,9 +132,18 @@ void Tilemap::loadFromFile(const std::string& path) {
             tileData["name"] && tileData["x"] && tileData["y"] && 
             tileData["texX"] && tileData["texY"] &&
             tileData["width"] && tileData["height"] && 
-            tileData["collision"],
+            tileData["collision"] && tileData["layer"],
             "data missing from tile entry"
         )
+
+        std::string tileName = tileData["name"].as<std::string>();
+        std::string layerName = tileData["layer"].as<std::string>();
+        bool collision = tileData["collision"].as<bool>();
+
+        Layer* layer = findLayer(layerName);
+        if (!layer) {
+            layers.push_back({{}, layerName});
+        }
 
         sf::IntRect subTexture (
             tileData["texX"].as<i32>(), tileData["texY"].as<i32>(),
@@ -119,8 +151,18 @@ void Tilemap::loadFromFile(const std::string& path) {
         );
 
         sf::Vector2i pos (tileData["x"].as<i32>(), tileData["y"].as<i32>());
-        setTile(pos, subTexture, tileData["name"].as<std::string>(), tileData["collision"].as<bool>());
+        setTile(pos, subTexture, layerName, tileName, collision);
     }
+}
+
+std::vector<Tile> Tilemap::allCollisionTiles() const {
+    std::vector<Tile> tiles;
+    for (const auto& layer : layers) {
+        for (const auto& tile : layer.tiles) {
+            if (tile.hasCollision()) tiles.push_back(tile);
+        }
+    }
+    return tiles;
 }
 
 void createTilemap(Scene& scene) {
@@ -132,7 +174,8 @@ void createTilemap(Scene& scene) {
     tlm->loadFromFile("../assets/map/test_map.yml");
 
     auto* collList = mapEntt.add<ColliderList>(false);
-    for (Tile& tile : tlm->tiles) {
+    auto collTiles = tlm->allCollisionTiles();
+    for (Tile& tile : collTiles) {
         if (!tile.hasCollision()) continue;
 
         f32 collSize = tile.sprite().getGlobalBounds().width;
