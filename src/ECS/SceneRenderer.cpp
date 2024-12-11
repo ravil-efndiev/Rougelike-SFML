@@ -11,10 +11,12 @@ SceneRenderer::SceneRenderer(Scene& scene, sf::RenderWindow& window)
     : mScene(scene), mWindow(window) {}
 
 void SceneRenderer::render() {
-    renderTilemaps(mScene.entities());
-    renderSprites(mScene.entities());
-    renderVfx(mScene.entities());
-    renderDebug(mScene.entities());
+    auto entities = mScene.entities();
+    renderTilemaps(entities, {"layout", "decorations_back"});
+    renderSprites(entities);
+    renderTilemaps(entities, {"decorations_fore"});
+    renderVfx(entities);
+    renderDebug(entities);
 }
 
 void SceneRenderer::renderSprites(const std::vector<Entity>& entities) {
@@ -72,13 +74,19 @@ void SceneRenderer::renderDebug(const std::vector<Entity>& entities) {
     }
 }
 
-void SceneRenderer::renderTilemaps(const std::vector<Entity>& entities) {
+void SceneRenderer::renderTilemaps(
+    const std::vector<Entity>& entities,
+    const std::vector<std::string>& layerNames
+) {
     for (const Entity& entity : entities) {
         if (!entity.has<Tilemap>()) continue;
 
         auto* tlm = entity.get<Tilemap>();
 
         for (auto& layer : tlm->layers) {
+            if (std::find(layerNames.begin(), layerNames.end(), layer.name) == layerNames.end()) 
+                continue;
+
             for (auto& tile : layer.tiles) {
                 if (!tile.initialized()) continue;
 

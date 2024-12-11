@@ -25,6 +25,7 @@ MapEditorState::MapEditorState(
         YAML::Node tlmData = YAML::LoadFile(mTilemapPath);
         if (tlmData["tiles"]) {
             mTilemap->loadFromFile(mTilemapPath);
+            mCurrentLayer = mTilemap->layers[0].name;
         }
     }
 }
@@ -148,6 +149,10 @@ void MapEditorState::renderUI() {
     for (const auto& layer : mTilemap->layers) {
         if (ImGui::Button(layer.name.c_str())) {
             mCurrentLayer = layer.name;
+        }
+        if (layer.name == mCurrentLayer) {
+            ImGui::SameLine();
+            ImGui::TextColored({0, 255, 0, 255}, "<");
         }
     }
     ImGui::Separator();

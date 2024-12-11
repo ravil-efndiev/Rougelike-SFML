@@ -1,5 +1,6 @@
 tileSize: 24
 tiles:
+  # layout
   wallDark0: [0, 1, true]
   wallDark1: [1, 1, true]
   wallDark2: [2, 1, true]
@@ -23,3 +24,9 @@ tiles:
   columnTop: [10, 0, true]
   sideLeftCornerRight: [11, 0, true]
   sideRightCornerLeft: [12, 0, true]
+  
+  # decorations
+  window: [0, 3, false]
+  barrels: [0, 5, true]
+  barrelsTop: [0, 4, false]
+  skull: [0, 6, false]

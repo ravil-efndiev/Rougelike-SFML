@@ -77,7 +77,7 @@ void Application::run() {
 
         mState->renderUI();
 
-        mWindow->clear(sf::Color(100, 100, 100, 255));
+        mWindow->clear(sf::Color(30, 30, 30, 255));
         mRenderer->render();
         ImGui::SFML::Render(*mWindow);
         mWindow->display();

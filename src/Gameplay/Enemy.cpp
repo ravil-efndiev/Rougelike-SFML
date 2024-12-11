@@ -179,7 +179,7 @@ void enemyAISystem(const std::vector<Entity>& entities) {
             continue;
         }
 
-        if (enemy->staggered) {
+        if (enemy->staggered && enemy->state != Enemy::attack) {
             animator->play("stan_" + directionNames.at(enemy->direction));
             if (animator->currentAnimation->isFinished()) {
                 enemy->staggered = false;
