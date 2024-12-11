@@ -34,6 +34,8 @@ GameState::GameState(Scene& scene) : mScene(scene) {
     initPlayer(mScene);
     for (i32 i = 0; i < 5; i++)
         spawnEnemy(mScene, EnemyType::undeadMelee, {Random::rangef(300.f, 600.f), Random::rangef(10.f, 300.f)});
+
+    spawnEnemy(mScene, EnemyType::undeadBrute, {800.f, 600.f});
 }
 
 void GameState::update() {

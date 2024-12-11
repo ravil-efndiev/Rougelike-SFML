@@ -63,7 +63,7 @@ void Scene::onEvent(const sf::Event& event) {
 }
 
 void Scene::onMainLoopEnd() {
-    for (const auto& entity : mRemovals){
+    for (const auto& entity : mRemovals) {
         mEntities.erase(std::remove(mEntities.begin(), mEntities.end(), entity), mEntities.end());
         mRegistry.clear(entity.id());
     }

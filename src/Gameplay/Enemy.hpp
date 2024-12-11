@@ -4,7 +4,7 @@
 
 enum class EnemyType {
     undeadMelee,
-    undeadArcher,
+    undeadBrute,
 };
 
 struct Enemy {
@@ -18,7 +18,7 @@ struct Enemy {
 
     State state = wander;
     f32 attackCooldown {}, attackCdTimer {};
-    f32 seeRadius {}, forgetRadius {};
+    f32 seeRadius {}, forgetRadius {}, attackRadius {};
     f32 moveSpeed {};
     bool canAttack = true;
     bool staggered = false;
